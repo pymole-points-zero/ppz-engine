@@ -1,0 +1,25 @@
+13:02:25 - IterationStart0
+13:02:35 - EpisodeEnded0
+13:02:43 - EpisodeEnded1
+13:02:46 - ExamplesSaved
+13:02:56 - TrainStarted
+13:02:56 - From /usr/local/lib/python3.6/dist-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+13:09:02 - TrainEnded
+13:09:11 - IterationStart1
+13:09:19 - EpisodeEnded0
+13:09:28 - EpisodeEnded1
+13:09:30 - ExamplesSaved
+13:09:55 - TrainStarted
+13:22:08 - TrainEnded
+14:31:33 - From /usr/local/lib/python3.6/dist-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+14:31:37 - IterationStart0
+14:35:24 - From /usr/local/lib/python3.6/dist-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+14:35:29 - IterationStart0
+14:35:40 - EpisodeEnded0
+14:35:49 - EpisodeEnded1
