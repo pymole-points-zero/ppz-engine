@@ -23,19 +23,20 @@ import CNN
 from logic import *
 from MCTS import MCTS
 
-FRAMES_MS           = 16      # ms/frame (62.5 frames per second)
-SCREEN_WIDTH        = 800
-SCREEN_HEIGHT       = 600
-SOURCE_DIR          = 'source/'
-SPRITES_DIR         = 'sprites/'
+FRAMES_MS = 16      # ms/frame (62.5 frames per second)
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+SOURCE_DIR = 'source/'
+SPRITES_DIR = 'sprites/'
+
 
 class Dot(QGraphicsPixmapItem):
-
     def __init__(self, x, y, parent = None):
         QGraphicsPixmapItem.__init__(self, parent)
 
         self.x = x
         self.y = y
+
 
 class DotsGame(QGraphicsScene):
     def __init__(self, parent = None):
@@ -85,8 +86,6 @@ class DotsGame(QGraphicsScene):
         self.view.show()
         self.view.setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.setSceneRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-
-
 
     def mousePressEvent(self, ev):
         if ev.button() == Qt.LeftButton:
@@ -189,6 +188,7 @@ class DotsGame(QGraphicsScene):
 
     def timerEvent(self, ev):
         self.game_update()
+
 
 if __name__ == '__main__':
     App = QApplication(sys.argv)

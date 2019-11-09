@@ -14,6 +14,7 @@ def client_connected():
         "action": "connected"
     }
 
+
 def close_client(addr, args):
     try:
         print(addr, "closing.")
@@ -27,6 +28,7 @@ def close_client(addr, args):
         # already closed
         pass
 
+
 def close_server():
     print("Closing server...")
     SERVER.close()
@@ -35,6 +37,7 @@ def close_server():
         clients[addr]['sock'].close()
 
     sys.exit()
+
 
 def new_game(addr, args):
     if args is None:
@@ -78,9 +81,11 @@ def new_game(addr, args):
 
     return out_args
 
+
 def end_game(addr, args):
     clients[addr]['game'] = None
     clients[addr]['mcts'] = None
+
 
 def get_turn_for_game(addr):
     mcts = clients[addr]['mcts']
@@ -97,6 +102,7 @@ def get_turn_for_game(addr):
 
     
     return a
+
 
 def auto_turn_server(addr, args):
     if clients[addr]['turn_ignore']:
@@ -159,11 +165,14 @@ def auto_turn_server(addr, args):
         }
     }
 
+
 def client_got_turn(addr, args):
     clients[addr]['turn_ignore'] = False
 
+
 class Communicator:
     header_len = 4  # (unsigned int) header length in byte which defines length of next json content
+
     def __init__(self, sock, addr):
         self.executor = None
         self.sock = sock
@@ -242,7 +251,6 @@ class Communicator:
             if self.json_content is not None:
                 self.send_json_to_executor()
 
-
     def _read(self):
         try:
             data = self.sock.recv(1024)
@@ -280,6 +288,7 @@ class Communicator:
 
     def _json_encode(self, json_dict):
         return json.dumps(json_dict, ensure_ascii=False).encode('utf8')
+
 
 class Executor:
     tasks = {
@@ -339,6 +348,7 @@ class Executor:
         if response is not None:
             self.com.add_response(response)
 
+
 def accept_wrapper():
     while True:
         conn, addr = SERVER.accept()  # Should be ready to read
@@ -362,6 +372,7 @@ def accept_wrapper():
 
         com.add_response(client_connected())
         print("Clients now:", len(clients))
+
 
 # load trained net
 nnet = DotsNet()

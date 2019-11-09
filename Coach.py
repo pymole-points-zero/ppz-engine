@@ -31,6 +31,7 @@ logging.basicConfig(
 	level=logging.INFO
 )
 
+
 class Coach:
 	def __init__(self, args):
 		self.args = args
@@ -73,7 +74,7 @@ class Coach:
 			# save each example of iteration in hdf5 file
 			iterExamples = np.empty(shape=[0, 3], dtype=np.object)
 			example_names = glob.glob("checkpoint/examples/ex*_i" + str(start_iter) + ".npy")
-            
+
 			for ex_id, example_name in enumerate(example_names):
 				try:
 					example = np.load(example_name)
@@ -88,7 +89,6 @@ class Coach:
 
 			logging.info('ExamplesSaveEnded')
 
-
 			# then delete all examples
 			logging.info("ExamplesDeleteStarted")
 
@@ -96,7 +96,6 @@ class Coach:
 				os.remove(example_name)
 
 			logging.info("ExamplesDeleteEnded")
-
 
 			# if history is crowded then remove examples of oldest iteration
 			if len(self.trainHistory) > self.args.history_length:
@@ -362,7 +361,7 @@ class Coach:
 			# save each example of iteration in hdf5 file
 			iterExamples = np.empty(shape=[0, 3], dtype=np.object)
 			example_names = glob.glob("checkpoint/examples/ex*_i" + str(start_iter) + ".npy")
-            
+
 			for ex_id, example_name in enumerate(example_names):
 				try:
 					example = np.load(example_name)
@@ -377,7 +376,6 @@ class Coach:
 
 			logging.info('ExamplesSaveEnded')
 
-
 		# then delete all examples
 		if start_points.index(continue_point) < start_points.index('ExamplesDeleteEnded'):
 			if continue_point != 'ExamplesDeleteStarted':
@@ -388,11 +386,9 @@ class Coach:
 
 			logging.info('ExamplesDeleteEnded')
 
-
 		# if history is crowded then remove examples of oldest iteration
 		if len(self.trainHistory) > self.args.history_length:
 			self.trainHistory.pop(0)
-
 
 		# load backup of the current model
 		old_nnet = CNN.DotsNet()
@@ -417,7 +413,6 @@ class Coach:
 		else:
 			# load trained nnet if train is ended
 			nnet.load(folder='checkpoint/', name='training_checkpoint')
-
 
 		# compare backup and trained net
 		if start_points.index(continue_point) < start_points.index('IterationEnded'):

@@ -11,8 +11,9 @@ import sys
 
 EPS = 1e-8
 
+
 class MCTS:
-	def __init__(self, simNumb, nnet, c_puct = 1):
+	def __init__(self, simNumb, nnet, c_puct=1):
 		self.simNumb = simNumb
 		self.nnet = nnet
 		self.Nsa = {}				# stores times action a visited in state s
@@ -22,7 +23,7 @@ class MCTS:
 		self.c_puct = c_puct
 
 	def search(self, game):
-		if game.gameEnded():
+		if game.is_ended():
 			# estimate after game scores from last player perspective
 			# return to upper function negative reward because of player's turn change
 			return lastTurnPlayerReward(game)
@@ -49,7 +50,6 @@ class MCTS:
 			if cur_uct > max_uct:
 				a = curA
 				max_uct = cur_uct
-
 
 		game.auto_turn(a)
 

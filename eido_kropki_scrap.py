@@ -20,7 +20,7 @@ driver = webdriver.Firefox(firefox_profile=profile, executable_path=drive_dir)
 
 # go to advanced search page
 driver.get("http://eidokropki.reaktywni.pl/games-adv.phtml?a=&b=&arank0=&arank1=&brank0=&brank1=&tourn=all&board%5B3932%5D=3932&result%5BA%5D=A&result%5BB%5D=B&rules%5BN%5D=N&page=82")
-start_cut = 110	# if bug apears at half of page then cut n games previous games
+start_cut = 110	# if bug apears at half of page then cut n previous games
 # loop
 while True:
 	# a tag to game pages of current advanced search page

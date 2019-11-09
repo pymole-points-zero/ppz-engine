@@ -31,10 +31,12 @@ def accept_wrapper():
 
         com.add_response(client_connected())
 
+
 def client_connected():
     return  {
         "action": "connected"
     }
+
 
 def close_client(addr, args):
     print(addr, "closing.")
@@ -44,6 +46,7 @@ def close_client(addr, args):
     clients[addr]['game'] = None
     clients[addr]['sock'].close()
     del clients[addr]
+
 
 def new_game(addr, args):
     if args is not None and clients[addr]['game'] is not None:
@@ -65,15 +68,18 @@ def new_game(addr, args):
         "action": "new_game_started"
     }
 
+
 def end_game(addr, args):
     clients[addr]['game'] = None
     clients[addr]['mcts'] = None
+
 
 def restart_game(addr, args):
     client_new_game(addr)
     return {
         "action": "restarted"
     }
+
 
 def auto_turn_server(addr, args):
     if clients[addr]['turn_ignore']:
@@ -144,8 +150,10 @@ def auto_turn_server(addr, args):
         }
     }
 
+
 def client_got_turn(addr, args):
     clients[addr]['turn_ignore'] = False
+
 
 class Communicator:
     header_len = 4  # (unsigned int) header length in byte which defines length of next json content
@@ -227,7 +235,6 @@ class Communicator:
             if self.json_content is not None:
                 self.send_json_to_executor()
 
-
     def _read(self):
         try:
             data = self.sock.recv(1024)
@@ -265,6 +272,7 @@ class Communicator:
 
     def _json_encode(self, json_dict):
         return json.dumps(json_dict, ensure_ascii=False).encode('utf8')
+
 
 class Executor:
     tasks = {
