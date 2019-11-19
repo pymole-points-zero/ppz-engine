@@ -30,7 +30,7 @@ class Game:
 		return '\n'.join(
 			'\t'.join(str(item[0]) for item in row)
 			for row in self.field
-		)
+		) + '\n'
 
 	'''
 	каждая точка (x, y) характеризуется:
@@ -94,10 +94,7 @@ class Game:
 
 	def can_put_dot(self, x, y):
 		# if no owner and not surrounded
-		if self.field[x, y, 0] == 0 and self.field[x, y, 1] == 0:
-			return True
-
-		return False
+		return self.field[x, y, 0] == 0 and self.field[x, y, 1] == 0
 
 	def neighbors_hor_ver(self, x, y):
 		for off_x, off_y in self.sides:
@@ -341,5 +338,6 @@ class Game:
 		self.turn += 1
 		self.player = -self.player
 
+	@property
 	def is_ended(self):
 		return not self.free_dots

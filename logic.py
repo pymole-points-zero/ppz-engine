@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def lastTurnPlayerReward(game):
+def last_turn_player_reward(game):
 	if game.score[-game.player] > game.score[game.player]:
 		return 1
 	elif game.score[-game.player] < game.score[game.player]:
@@ -10,18 +10,18 @@ def lastTurnPlayerReward(game):
 	return 0
 
 
-def getFieldPerc(field, player):
+def get_field_perc(field, player):
 	# game field from player's perspective
 	return field * player
 
 
-def stringRepresentation(field):
+def string_repr(field):
 	return ''.join(str(item) for row in field for item in row)
 
 
-def getSymmetries(game, pi):
+def get_symmetries(game, pi):
 	l = []
-	curPlrPercField = getFieldPerc(game.field, game.player)			# get field from player's percpective
+	curPlrPercField = get_field_perc(game.field, game.player)			# get field from player's percpective
 	pi_board = np.reshape(pi, (game.width, game.height))
 
 	if game.width == game.height:

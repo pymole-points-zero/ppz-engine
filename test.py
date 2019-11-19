@@ -1,13 +1,18 @@
 import time
+import CNN
+from engine import Game
+from MCTS import MCTS
 
-n = 100
-field = [[1]*n for _ in range(n)]
+nnet = CNN.DotsNet()
+game = Game(15, 15)
+mcts = MCTS(10, nnet)
+
 
 start = time.time()
 
-# TODO Change on accumulate from itertools
-
+mcts.play_simulations(game)
+print(mcts.get_policy())
 
 print(time.time() - start)
 
-# 0.0060028
+# 0.02
