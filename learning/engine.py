@@ -2,6 +2,7 @@ import math
 import random
 import numpy as np
 from itertools import islice
+from collections import defaultdict
 
 
 class Game:
@@ -12,14 +13,14 @@ class Game:
 		(1, 0)
 	)
 
-	diogonal = (
+	diagonal = (
 		(-1, -1),
 		(1, 1),
 		(-1, 1),
 		(1, -1)
 	)
 
-	allsides = tuple(list(sides) + list(diogonal))
+	allsides = tuple(list(sides) + list(diagonal))
 
 	def __init__(self, w=15, h=15):
 		self.width = w
@@ -48,8 +49,8 @@ class Game:
 		self.field = np.full((self.width, self.height, 2), fill_value=0, dtype=np.int8)
 		self.turn = 1
 		self.score = {-1: 0, 1: 0}
-		self.sur_zones = []
-		self.busy_dots = []
+		# self.sur_zones = []
+		self.moves = []
 		self.free_dots = set(range(self.field_size))
 		self.player = -1
 
@@ -63,7 +64,7 @@ class Game:
 		for owner, dots in cross.items():
 			for x, y in dots:
 				self.put_dot(x, y, owner)
-				self.fix_dot(self.get_ind_of_pos(x, y))
+				self.free_dots.remove(self.get_ind_of_pos(x, y))
 
 		return cross
 
@@ -72,25 +73,23 @@ class Game:
 
 	def auto_turn(self, ind, owner=None):
 		# Automatised method for player turn
-		x, y = self.get_pos_of_ind(ind)
 		if owner is None:
 			owner = self.player
-		self.put_dot(x, y, owner)
-		self.fix_dot(ind)
+
+		self.put_dot(*self.get_pos_of_ind(ind), owner)
+
+		self.moves.append(ind)
+		self.free_dots.remove(ind)
+
 		self.surround_check(mode='all')		# check all points of p1
 		self.change_turn()					# change turn
-		self.surround_check(mode='last')	# check p1 last turn for trapping 
-
-	def fix_dot(self, dot_ind):
-		self.busy_dots.append(dot_ind)
-		self.free_dots.remove(dot_ind)
+		self.surround_check(mode='last')	# check p1 last turn for trapping
 
 	def get_ind_of_pos(self, x, y):
 		return self.width * y + x
 
 	def get_pos_of_ind(self, ind):
-		pos = (ind%self.width, ind//self.width)
-		return pos
+		return ind%self.width, ind//self.width
 
 	def can_put_dot(self, x, y):
 		# if no owner and not surrounded
@@ -104,55 +103,56 @@ class Game:
 		for off_x, off_y in self.allsides:
 			yield x+off_x, y+off_y
 
+	def is_edge(self, x, y):
+		return x == self.width - 1 or x == 0 or y == self.height - 1 or y == 0
+
 	def wave_check(self, start_x, start_y, visited):
 		# self.player - surrounder
 		# -self.player - surrounded
-		chain = []
+		chain = set()
 		
-		toCheck = [(start_x, start_y)]
-		checked = []
+		toCheck = {(start_x, start_y)}
+		checked = set()
 
 		while toCheck:
-			cur_x, cur_y = toCheck.pop()
+			cur_dot = toCheck.pop()
+			cur_x, cur_y = cur_dot
 
-			visited[cur_y][cur_x] = True
-
-			# волна достигла края игровой доски
-			if self.field[cur_x, cur_y, 0] != self.player and \
-				(cur_x == self.width - 1 or cur_x == 0 or cur_y == self.height - 1 or cur_y == 0):
-				return (
-					False,	# возвращаем пустую цепь
-					set(checked) - set(chain)
-				)
-
-			checked.append((cur_x, cur_y))
+			checked.add(cur_dot)
 
 			# инициализация соседних от текущей точки координат
 
 			for neib_x, neib_y in self.neighbors_hor_ver(cur_x, cur_y):
 				# проходимся только по непройденным соседям
-				if visited[neib_y][neib_x]:
-					continue
-
-				visited[neib_y][neib_x] = True
 				neib = (neib_x, neib_y)
 
 				if self.field[neib_x, neib_y, 0] == self.player and self.field[neib_x, neib_y, 1] != -self.player:
 					# добавляем точку в цепь, если она окружает
-					chain.append(neib)
-				else:
+					chain.add(neib)
+				elif neib in visited or self.field[neib_x, neib_y, 0] != self.player and self.is_edge(neib_x, neib_y):
+					# наткнулись на соседа текущей точки, который уже доходил до края или же
+					# непосредстенно текущая точка достигла достигла края игровой доски
+					sur = checked - chain
+					visited.update(sur)
+
+					return (
+						False,  # возвращаем пустую цепь
+						sur
+					)
+				elif neib not in checked:
 					# окружаемую точку или пустой пункт добавляем в стэк для дальнейшей проверки
-					toCheck.append(neib)
+					toCheck.add(neib)
 
 
 		# создание графа, состоящего из точек цепи
-		graph = {dot: [] for dot in chain}
+		graph = {dot:[] for dot in chain}
+		chain = list(chain)
 		for i in range(len(chain) - 1):
-			elm1 = chain[i]
-			for elm2 in islice(chain, i + 1, len(chain)):
-				if elm1 in self.neighbors_all(elm2[0], elm2[1]):
-					graph[elm1].append(elm2)
-					graph[elm2].append(elm1)
+			dot1 = chain[i]
+			for dot2 in islice(chain, i + 1, len(chain)):
+				if dot1 in self.neighbors_all(*dot2):
+					graph[dot1].append(dot2)
+					graph[dot2].append(dot1)
 
 		# поиск циклов эйлера в графе
 		start = 0
@@ -195,7 +195,7 @@ class Game:
 			if length > longest_len:
 				chain = path
 
-		return chain, set(checked) - set(chain)
+		return chain, checked - set(chain)
 
 	def surround_check(self, mode='all'):
 		# формирование списка точек для проверки на окружение
@@ -207,12 +207,13 @@ class Game:
 				if self.field[x, y, 0] == -self.player and self.field[x, y, 1] == 0
 			)
 		elif mode == 'last':
-			to_check = [self.get_pos_of_ind(self.busy_dots[-1])]
+			pos = self.get_pos_of_ind(self.moves[-1])
+			to_check = [] if self.is_edge(*pos) else [pos]
 
-		visited = [[False] * self.width for _ in range(self.height)]
+		visited = set()
 
 		for x, y in to_check:
-			if visited[y][x]:
+			if (x, y) in visited:
 				continue
 
 			# запуск волны
@@ -220,12 +221,10 @@ class Game:
 
 			# если волна не дошла до края и цепь не пуста
 			if chain:
-				for dot_x, dot_y in sur:
+				for dot in sur:
+					dot_x, dot_y = dot
 					# добавляем точку, если её еще нет в занятых
-					if self.field[dot_x, dot_y, 0] == 0:
-						d = self.get_ind_of_pos(dot_x, dot_y)
-						if d not in self.busy_dots:
-							self.fix_dot(d)
+					self.free_dots.discard(self.get_ind_of_pos(*dot))
 
 					# если точка принадлежит текущему игроку и она окружена, то она освобождается
 					# от окружения путем убавления одного очка противоположного игрока
@@ -239,8 +238,8 @@ class Game:
 					# меняем владельца точки на игрока, который завершил ход
 					self.field[dot_x, dot_y, 1] = self.player
 
-				if chain not in self.sur_zones:
-					self.sur_zones.append(chain)
+				# if chain not in self.sur_zones:
+				# 	self.sur_zones.append(chain)
 
 	def _random_crosses(self):
 		variants = (
@@ -337,6 +336,9 @@ class Game:
 		# Определяем, кто ходит. Четный ход -1, нечетный 1
 		self.turn += 1
 		self.player = -self.player
+
+	def get_state(self):
+		return ''.join(map(str, self.moves))
 
 	@property
 	def is_ended(self):

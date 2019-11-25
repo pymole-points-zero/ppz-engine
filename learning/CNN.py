@@ -11,11 +11,11 @@ from utils import *
 
 args = dotdict({
     'filter_num': 64,
-    'epochs': 10,
+    'epochs': 1,
     'dropout': 0.3,
     'lr': 0.001,
     'batch_size': 32,
-    'residualblock_num': 15,
+    'residualblock_num': 1,
     'input_shape': (15, 15, 2),
     'num_actions': 15 * 15,
 })
@@ -138,7 +138,7 @@ class DotsNet:
 
     def save(self, name, folder='checkpoint/models/'):
         if not os.path.exists(folder):
-            os.mkdir(folder)
+            os.makedirs(folder)
 
         self.model.save_weights(folder + name + ".h5")
 

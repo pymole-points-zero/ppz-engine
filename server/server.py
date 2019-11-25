@@ -4,7 +4,7 @@ from threading import Thread
 import sys
 import json
 import struct
-from CNN import DotsNet
+from learning.CNN import DotsNet
 from engine import Game
 from MCTS import MCTS
 

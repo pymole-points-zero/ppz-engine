@@ -4,14 +4,11 @@ from PyQt5.QtCore import (
     QBasicTimer
 )
 from PyQt5.QtGui import (
-    QBrush,
     QPixmap
 )
 from PyQt5.QtWidgets import (
     QApplication,
-    QGraphicsItem,
     QGraphicsPixmapItem,
-    QGraphicsRectItem,
     QGraphicsScene,
     QGraphicsView,
     QGraphicsTextItem,
@@ -19,8 +16,7 @@ from PyQt5.QtWidgets import (
 )
 
 from engine import Game
-import CNN
-from logic import *
+from learning import CNN
 from MCTS import MCTS
 
 FRAMES_MS = 16      # ms/frame (62.5 frames per second)

@@ -8,7 +8,6 @@ def simple_surround():
 
     game = Game(3, 3)
     game.reset(random_crosses=False)
-    print(game)
 
     game.auto_turn(0)
     game.auto_turn(1)
@@ -21,7 +20,6 @@ def simple_surround():
 
     print(game)
     print(game.score)
-    print(game.field)
 
 
 def double_simple():
@@ -46,16 +44,12 @@ def double_simple():
 
     game.put_dot(4, 1, -1)
 
-    print()
-    print(game)
-    print()
 
     game.change_turn()
     game.surround_check(mode='all')
 
     print(game)
     print(game.score)
-    print(game.field)
 
 
 def graph_while():
@@ -83,17 +77,16 @@ def graph_while():
     game.put_dot(2, 4, 1)
     game.put_dot(3, 4, 1)
 
-    print()
-    print(game)
-    print()
 
     game.put_dot(1, 1, -1)
+    game.fix_dot(6)
     game.change_turn()
-    game.surround_check(mode='all')
+    game.surround_check(mode='last')
 
     print(game)
     print(game.score)
-    print(game.field)
 
 
 double_simple()
+simple_surround()
+graph_while()
