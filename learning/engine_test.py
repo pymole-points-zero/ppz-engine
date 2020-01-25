@@ -23,30 +23,28 @@ def simple_surround():
 
 
 def double_simple():
-    # #.##.#
-    # .0..0.
-    # #.##.#
+    # #.#.#
+    # .0.0.
+    # #.#.#
 
-    game = Game(6, 3)
+    game = Game(5, 3)
     game.reset(random_crosses=False)
 
-    game.put_dot(1, 0, 1)
-    game.put_dot(2, 1, 1)
-    game.put_dot(1, 2, 1)
-    game.put_dot(0, 1, 1)
+    game.make_move(1, 1)
+    game.make_move(3, 1)
+    game.make_move(5, 1)
+    game.make_move(9, 1)
+    game.make_move(11, 1)
+    game.make_move(13, 1)
 
-    game.put_dot(1, 1, -1)
+    game.make_move(6, -1)
+    game.make_move(8, -1)
 
-    game.put_dot(4, 0, 1)
-    game.put_dot(5, 1, 1)
-    game.put_dot(4, 2, 1)
-    game.put_dot(3, 1, 1)
-
-    game.put_dot(4, 1, -1)
-
+    game.make_move(7, 1)
 
     game.change_turn()
-    game.surround_check(mode='all')
+    print(game.player)
+    game.surround_check(mode='surround')
 
     print(game)
     print(game.score)
@@ -59,29 +57,31 @@ def graph_while():
     # .####.
     # #....#
 
-    game = Game(5, 5)
+    game = Game(6, 5)
     game.reset(random_crosses=False)
     print(game)
 
-    game.put_dot(1, 0, 1)
-    game.put_dot(2, 0, 1)
-    game.put_dot(3, 0, 1)
-    game.put_dot(0, 1, 1)
-    game.put_dot(4, 1, 1)
-    game.put_dot(0, 2, 1)
-    game.put_dot(2, 2, 1)
-    game.put_dot(3, 2, 1)
-    game.put_dot(0, 3, 1)
-    game.put_dot(4, 3, 1)
-    game.put_dot(1, 4, 1)
-    game.put_dot(2, 4, 1)
-    game.put_dot(3, 4, 1)
+    game.make_move(1, 1)
+    game.make_move(2, 1)
+    game.make_move(3, 1)
+    game.make_move(4, 1)
+    game.make_move(6, 1)
+    game.make_move(11, 1)
+    game.make_move(12, 1)
+    game.make_move(0, 2, 1)
+    game.make_move(2, 2, 1)
+    game.make_move(3, 2, 1)
+    game.make_move(0, 3, 1)
+    game.make_move(4, 3, 1)
+    game.make_move(1, 4, 1)
+    game.make_move(2, 4, 1)
+    game.make_move(3, 4, 1)
 
 
-    game.put_dot(1, 1, -1)
+    game.make_move(1, 1, -1)
     game.fix_dot(6)
     game.change_turn()
-    game.surround_check(mode='last')
+    game.surround_check(mode='suicide')
 
     print(game)
     print(game.score)
@@ -89,4 +89,4 @@ def graph_while():
 
 double_simple()
 simple_surround()
-graph_while()
+# graph_while()

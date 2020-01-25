@@ -2,7 +2,7 @@ import math
 import random
 import numpy as np
 from itertools import islice
-from collections import defaultdict
+from functools import partial
 
 
 class Game:
@@ -63,27 +63,26 @@ class Game:
 
 		for owner, dots in cross.items():
 			for x, y in dots:
-				self.put_dot(x, y, owner)
-				self.free_dots.remove(self.get_ind_of_pos(x, y))
+				self.make_move(self.get_ind_of_pos(x, y), owner)
 
 		return cross
 
-	def put_dot(self, x, y, owner):
+	def change_owner(self, x, y, owner):
 		self.field[x, y, 0] = owner
 
-	def auto_turn(self, ind, owner=None):
-		# Automatised method for player turn
-		if owner is None:
-			owner = self.player
-
-		self.put_dot(*self.get_pos_of_ind(ind), owner)
+	def make_move(self, ind, owner):
+		self.change_owner(*self.get_pos_of_ind(ind), owner)
 
 		self.moves.append(ind)
 		self.free_dots.remove(ind)
 
-		self.surround_check(mode='all')		# check all points of p1
-		self.change_turn()					# change turn
-		self.surround_check(mode='last')	# check p1 last turn for trapping
+	def auto_turn(self, ind):
+		# Automatised method for player turn
+		self.make_move(ind, self.player)
+
+		self.surround_check(mode='surround')		# check all points of p1
+		self.change_turn()							# change turn
+		self.surround_check(mode='suicide')			# check p1 last turn for trapping
 
 	def get_ind_of_pos(self, x, y):
 		return self.width * y + x
@@ -106,7 +105,10 @@ class Game:
 	def is_edge(self, x, y):
 		return x == self.width - 1 or x == 0 or y == self.height - 1 or y == 0
 
-	def wave_check(self, start_x, start_y, visited):
+	def is_on_board(self, x, y):
+		return 0 <= x <= self.width - 1 and 0 <= y <= self.height - 1
+
+	def chain_check(self, start_x, start_y, visited):
 		# self.player - surrounder
 		# -self.player - surrounded
 		chain = set()
@@ -123,7 +125,6 @@ class Game:
 			# инициализация соседних от текущей точки координат
 
 			for neib_x, neib_y in self.neighbors_hor_ver(cur_x, cur_y):
-				# проходимся только по непройденным соседям
 				neib = (neib_x, neib_y)
 
 				if self.field[neib_x, neib_y, 0] == self.player and self.field[neib_x, neib_y, 1] != -self.player:
@@ -146,16 +147,15 @@ class Game:
 
 		# создание графа, состоящего из точек цепи
 		graph = {dot:[] for dot in chain}
-		chain = list(chain)
-		for i in range(len(chain) - 1):
-			dot1 = chain[i]
+		for i, dot1 in enumerate(chain):
 			for dot2 in islice(chain, i + 1, len(chain)):
 				if dot1 in self.neighbors_all(*dot2):
 					graph[dot1].append(dot2)
 					graph[dot2].append(dot1)
 
 		# поиск циклов эйлера в графе
-		start = 0
+		chain_iter = iter(chain)
+		start = next(chain_iter)
 		pathes = []
 
 		# для обработки следующей ситуации используется первый цикл while
@@ -166,23 +166,23 @@ class Game:
 		# #....#
 
 		while not pathes:
-			while len(graph[chain[start]]) != 2:
-				start += 1
+			while len(graph[start]) != 2:
+				start = next(chain_iter)
 
-			toCheck = [([chain[start]], 0)]
+			toCheck = [([start], 0)]
 
 			while toCheck:
 				cur_path, cur_path_len = toCheck.pop()
 				last_element = cur_path[-1]
 
-				for n in graph[last_element]:
-					if n in cur_path:
+				for neigh_element in graph[last_element]:
+					if neigh_element in cur_path:
 						continue
 
-					new_path = cur_path + [n]
-					updated_path = (new_path, cur_path_len + self._points_distance(last_element, n))
+					new_path = cur_path + [neigh_element]
+					updated_path = (new_path, cur_path_len + self._points_distance(last_element, neigh_element))
 
-					if chain[start] in graph[n] and len(new_path) >= 4:
+					if start in graph[neigh_element] and len(new_path) >= 4:
 						pathes.append(updated_path)
 					else:
 						toCheck.append(updated_path)
@@ -195,29 +195,36 @@ class Game:
 			if length > longest_len:
 				chain = path
 
-		return chain, checked - set(chain)
+		return chain, checked - chain
 
-	def surround_check(self, mode='all'):
+	def surround_check(self, mode='surround'):
 		# формирование списка точек для проверки на окружение
-		if mode == 'all':
+		if mode == 'surround':
 			# итератор по всем точкам, которые нужно пройти
+			# нужно пройти только 4 соседние точки от последней поставленной, чтобы определить
+			# что она могла окружить
 			to_check = (
 				(x, y)
-				for x in range(1, self.width - 1) for y in range(1, self.height - 1)
-				if self.field[x, y, 0] == -self.player and self.field[x, y, 1] == 0
+				for x, y in self.neighbors_hor_ver(*self.get_pos_of_ind(self.moves[-1]))
+				if self.is_on_board(x, y) and not self.is_edge(x, y)
 			)
-		elif mode == 'last':
+		elif mode == 'suicide':
 			pos = self.get_pos_of_ind(self.moves[-1])
-			to_check = [] if self.is_edge(*pos) else [pos]
+			if self.is_edge(*pos):
+				return
+
+			to_check = (pos,)
 
 		visited = set()
 
-		for x, y in to_check:
-			if (x, y) in visited:
+		for check_dot in to_check:
+			if check_dot in visited:
 				continue
 
-			# запуск волны
-			chain, sur = self.wave_check(x, y, visited)	# получаем цепь и окруженные точки
+			x, y = check_dot
+
+			# ищем область окружения точки, если она есть
+			chain, sur = self.chain_check(x, y, visited)	# получаем цепь и окруженные точки
 
 			# если волна не дошла до края и цепь не пуста
 			if chain:
@@ -242,21 +249,8 @@ class Game:
 				# 	self.sur_zones.append(chain)
 
 	def _random_crosses(self):
-		variants = (
-			(self._make_4crosses, None),
-			(self._make_1cross, False),
-			(self._make_1cross, True),
-			(None, None)
-		)
-
-		func, *args = random.choice(variants)
-
-		if func is None:
-			return {-1: [], 1: []}
-		elif args[0] is None:
-			return func()
-		else:
-			return func(*args)
+		crosses_func = random.choice(self.cross_functions)
+		return crosses_func()
 
 	def _make_4crosses(self):
 		min_side = min(self.width, self. height)
@@ -268,7 +262,7 @@ class Game:
 			math.floor(random.uniform(0.3, 0.6) * square_side_len),
 			random.choice([-1, 1]) * math.floor(random.uniform(0.3, 0.6) * square_side_len)
 		)
-		
+
 		# get two crosses relativly to the center of the board
 		cross1_center = rand_cross_center()
 
@@ -276,7 +270,7 @@ class Game:
 			cross2_center = rand_cross_center()
 			if self._points_distance(cross1_center, cross2_center) > 4:
 				break
-		
+
 		crosses_centers = [
 			cross1_center,
 			cross2_center
@@ -300,21 +294,21 @@ class Game:
 		}
 
 		for x, y in crosses_centers:
-			crosses[-1].append(tuple(map(int, (x - 1, y - 1) )) )
-			crosses[-1].append(tuple(map(int, (x, y) )) )
-			crosses[1].append(tuple(map(int, (x, y - 1) )) )
-			crosses[1].append(tuple(map(int, (x - 1, y) )) )
+			crosses[-1].append((int(x - 1), int(y - 1)))
+			crosses[-1].append((int(x), int(y)))
+			crosses[1].append((int(x), int(y - 1)))
+			crosses[1].append((int(x - 1), int(y)))
 
 		return crosses
 
-	def _make_1cross(self, center = False):
+	def _make_1cross(self, center=False):
 		# center
-		
+
 		crosses = {
 			-1: [],
 			1: []
 		}
-		
+
 		if center:
 			x, y = self.width//2, self.height//2
 		else:
@@ -322,18 +316,19 @@ class Game:
 			x = random.randint(1, self.width - 2)
 			y = random.randint(1, self.height - 2)
 
-		crosses[-1].append(tuple(map(int, (x - 1, y - 1) )) )
-		crosses[-1].append(tuple(map(int, (x, y) )) )
-		crosses[1].append(tuple(map(int, (x, y - 1) )) )
-		crosses[1].append(tuple(map(int, (x - 1, y) )) )
+		crosses[-1].append((int(x - 1), int(y - 1)))
+		crosses[-1].append((int(x), int(y)))
+		crosses[1].append((int(x), int(y - 1)))
+		crosses[1].append((int(x - 1), int(y)))
 
 		return crosses
 
-	def _points_distance(self, p1, p2):
+	@staticmethod
+	def _points_distance(p1, p2):
 		return math.sqrt((p1[0]-p2[0])**2+(p1[1]-p2[1])**2)
 
 	def change_turn(self):
-		# Определяем, кто ходит. Четный ход -1, нечетный 1
+		# Смена хода
 		self.turn += 1
 		self.player = -self.player
 
@@ -343,3 +338,10 @@ class Game:
 	@property
 	def is_ended(self):
 		return not self.free_dots
+
+	cross_functions = (
+		partial(_make_1cross, False),
+		partial(_make_1cross, True),
+		_make_4crosses,
+		lambda: {-1:[], 1:[]}
+	)
