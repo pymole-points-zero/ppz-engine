@@ -1,0 +1,430 @@
+13:02:25 - IterationStart0
+13:02:35 - EpisodeEnded0
+13:02:43 - EpisodeEnded1
+13:02:46 - ExamplesSaved
+13:02:56 - TrainStarted
+13:02:56 - From /usr/local/lib/python3.6/dist-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+13:09:02 - TrainEnded
+13:09:11 - IterationStart1
+13:09:19 - EpisodeEnded0
+13:09:28 - EpisodeEnded1
+13:09:30 - ExamplesSaved
+13:09:55 - TrainStarted
+13:22:08 - TrainEnded
+14:31:33 - From /usr/local/lib/python3.6/dist-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+14:31:37 - IterationStart0
+14:35:24 - From /usr/local/lib/python3.6/dist-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+14:35:29 - IterationStart0
+14:35:40 - EpisodeEnded0
+14:35:49 - EpisodeEnded1
+01:43:19 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+01:44:48 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+01:45:02 - IterationStarted0
+01:45:02 - EpisodeStarted0
+02:09:46 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+02:09:59 - IterationStarted0
+02:09:59 - EpisodeStarted0
+02:12:10 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+02:12:23 - IterationStarted0
+02:12:23 - EpisodeStarted0
+02:14:53 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+02:15:06 - IterationStarted0
+02:15:06 - EpisodeStarted0
+02:17:07 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+02:17:12 - IterationStarted0
+02:17:12 - EpisodeStarted0
+02:30:01 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+02:30:05 - IterationStarted0
+02:30:05 - EpisodeStarted0
+02:33:52 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+02:33:55 - IterationStarted0
+02:33:55 - EpisodeStarted0
+02:37:48 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+02:37:53 - IterationStarted0
+02:37:53 - EpisodeStarted0
+17:12:47 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+17:12:49 - IterationStarted0
+17:12:49 - EpisodeStarted0
+17:13:38 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+17:13:40 - IterationStarted0
+17:13:40 - EpisodeStarted0
+17:39:04 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+17:39:06 - IterationStarted0
+17:39:06 - EpisodeStarted0
+17:40:39 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+17:40:41 - IterationStarted0
+17:40:41 - EpisodeStarted0
+17:55:34 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+17:55:36 - IterationStarted0
+17:55:36 - EpisodeStarted0
+19:00:01 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+19:00:03 - IterationStarted0
+19:00:03 - EpisodeStarted0
+19:19:15 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+19:19:16 - IterationStarted0
+19:19:16 - EpisodeStarted0
+19:22:43 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+19:22:44 - IterationStarted0
+19:22:44 - EpisodeStarted0
+19:23:20 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+19:23:22 - IterationStarted0
+19:23:22 - EpisodeStarted0
+19:23:40 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+19:23:42 - IterationStarted0
+19:23:42 - EpisodeStarted0
+19:24:07 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+19:24:08 - IterationStarted0
+19:24:08 - EpisodeStarted0
+19:24:34 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+19:24:35 - IterationStarted0
+19:24:35 - EpisodeStarted0
+19:32:20 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+19:32:22 - IterationStarted0
+19:32:22 - EpisodeStarted0
+19:54:35 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+19:54:36 - IterationStarted0
+19:54:36 - EpisodeStarted0
+19:56:30 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+19:56:32 - IterationStarted0
+19:56:32 - EpisodeStarted0
+20:12:11 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+20:12:13 - IterationStarted0
+20:12:13 - EpisodeStarted0
+20:13:52 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+20:13:54 - IterationStarted0
+20:13:54 - EpisodeStarted0
+20:17:00 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+20:17:01 - IterationStarted0
+20:17:01 - EpisodeStarted0
+20:20:14 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+20:20:15 - IterationStarted0
+20:20:15 - EpisodeStarted0
+20:32:29 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+20:32:31 - IterationStarted0
+20:32:31 - EpisodeStarted0
+20:42:06 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+20:42:08 - IterationStarted0
+20:42:08 - EpisodeStarted0
+20:46:42 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+20:46:44 - IterationStarted0
+20:46:44 - EpisodeStarted0
+20:52:50 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+20:52:52 - IterationStarted0
+20:52:52 - EpisodeStarted0
+21:53:18 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+21:53:19 - IterationStarted0
+21:53:19 - EpisodeStarted0
+22:14:59 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+22:15:01 - IterationStarted0
+22:15:01 - EpisodeStarted0
+22:19:56 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+22:19:57 - IterationStarted0
+22:19:57 - EpisodeStarted0
+22:20:12 - EpisodeEnded0
+22:20:12 - ExamplesSaveStarted
+22:21:55 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+22:21:56 - IterationStarted0
+22:21:56 - EpisodeStarted0
+22:22:10 - EpisodeEnded0
+22:22:10 - ExamplesSaveStarted
+22:22:10 - ExamplesSaveEnded
+22:22:10 - ExamplesDeleteStarted
+22:22:10 - ExamplesDeleteEnded
+22:22:11 - TrainStarted0
+22:22:12 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\ops\math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+22:24:30 - TrainEnded0
+22:24:30 - TrainStarted1
+22:26:46 - TrainEnded1
+22:26:46 - TrainStarted2
+22:29:03 - TrainEnded2
+22:29:03 - TrainStarted3
+22:29:38 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+22:29:40 - IterationStarted0
+22:29:40 - EpisodeStarted0
+22:29:52 - EpisodeEnded0
+22:29:52 - ExamplesSaveStarted
+22:29:52 - ExamplesSaveEnded
+22:29:52 - ExamplesDeleteStarted
+22:29:52 - ExamplesDeleteEnded
+22:29:53 - TrainStarted0
+22:29:54 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\ops\math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+22:32:13 - TrainEnded0
+22:36:39 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+22:36:41 - IterationStarted0
+22:36:41 - EpisodeStarted0
+22:36:54 - EpisodeEnded0
+22:36:54 - ExamplesSaveStarted
+22:36:54 - ExamplesSaveEnded
+22:36:54 - ExamplesDeleteStarted
+22:36:54 - ExamplesDeleteEnded
+22:36:56 - TrainStarted0
+22:36:56 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\ops\math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+22:39:30 - TrainEnded0
+23:02:36 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+23:02:38 - IterationStarted0
+23:02:38 - EpisodeStarted0
+23:02:52 - EpisodeEnded0
+23:02:52 - ExamplesSaveStarted
+23:02:52 - ExamplesSaveEnded
+23:02:52 - ExamplesDeleteStarted
+23:02:52 - ExamplesDeleteEnded
+23:02:53 - TrainStarted0
+23:02:53 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\ops\math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+23:05:17 - TrainEnded0
+13:03:10 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+13:03:12 - IterationStarted0
+13:03:12 - EpisodeStarted0
+13:08:14 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+13:08:16 - IterationStarted0
+13:08:16 - EpisodeStarted0
+13:11:44 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+13:11:46 - IterationStarted0
+13:11:46 - EpisodeStarted0
+13:13:25 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+13:13:27 - IterationStarted0
+13:13:27 - EpisodeStarted0
+13:17:02 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+13:17:04 - IterationStarted0
+13:17:04 - EpisodeStarted0
+13:18:50 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+13:18:52 - IterationStarted0
+13:18:52 - EpisodeStarted0
+13:19:08 - EpisodeEnded0
+13:19:08 - ExamplesSaveStarted
+13:19:08 - ExamplesSaveEnded
+13:19:08 - ExamplesDeleteStarted
+13:19:08 - ExamplesDeleteEnded
+13:19:10 - TrainStarted0
+13:19:10 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\ops\math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+13:21:32 - TrainEnded0
+13:21:48 - IterationEnded0
+13:55:00 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+13:55:02 - IterationStarted0
+13:55:02 - EpisodeStarted0
+13:55:43 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+13:55:45 - IterationStarted0
+13:55:45 - EpisodeStarted0
+13:56:18 - EpisodeEnded0
+13:56:18 - ExamplesSaveStarted
+13:56:18 - ExamplesSaveEnded
+13:56:18 - ExamplesDeleteStarted
+13:56:18 - ExamplesDeleteEnded
+13:56:21 - TrainStarted0
+13:56:21 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\ops\math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+13:58:48 - TrainEnded0
+14:11:10 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+14:11:12 - IterationStarted0
+14:11:12 - EpisodeStarted0
+14:11:41 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+14:11:43 - IterationStarted0
+14:11:43 - EpisodeStarted0
+14:12:20 - EpisodeEnded0
+14:12:20 - ExamplesSaveStarted
+14:12:20 - ExamplesSaveEnded
+14:12:20 - ExamplesDeleteStarted
+14:12:20 - ExamplesDeleteEnded
+14:12:22 - TrainStarted0
+14:12:22 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\ops\math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+14:14:40 - TrainEnded0
+14:32:39 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+14:32:41 - IterationStarted0
+14:32:41 - EpisodeStarted0
+14:36:11 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+14:36:13 - IterationStarted0
+14:36:13 - EpisodeStarted0
+14:36:45 - EpisodeEnded0
+14:36:45 - ExamplesSaveStarted
+14:36:45 - ExamplesSaveEnded
+14:36:45 - ExamplesDeleteStarted
+14:36:45 - ExamplesDeleteEnded
+14:36:47 - TrainStarted0
+14:36:47 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\ops\math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+14:39:18 - TrainEnded0
+14:42:42 - IterationEnded0
+14:44:37 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+14:44:38 - IterationStarted0
+14:44:38 - EpisodeStarted0
+14:58:32 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+14:58:33 - IterationStarted0
+14:58:33 - EpisodeStarted0
+15:21:16 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+15:21:17 - IterationStarted0
+15:21:17 - EpisodeStarted0
+15:34:17 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+15:34:18 - IterationStarted0
+15:34:18 - EpisodeStarted0
+15:35:20 - EpisodeEnded0
+15:35:20 - EpisodeStarted1
+15:36:26 - EpisodeEnded1
+15:36:26 - ExamplesSaveStarted
+15:36:26 - ExamplesSaveEnded
+15:36:26 - ExamplesDeleteStarted
+15:36:26 - ExamplesDeleteEnded
+15:36:28 - TrainStarted0
+15:36:28 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\ops\math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+15:36:37 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+15:36:39 - IterationStarted0
+15:36:39 - EpisodeStarted0
+15:37:42 - EpisodeEnded0
+15:37:42 - EpisodeStarted1
+15:38:48 - EpisodeEnded1
+15:38:48 - ExamplesSaveStarted
+15:38:49 - ExamplesSaveEnded
+15:38:49 - ExamplesDeleteStarted
+15:38:49 - ExamplesDeleteEnded
+15:38:50 - TrainStarted0
+15:38:50 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\ops\math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+15:39:09 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+15:39:10 - IterationStarted0
+15:39:10 - EpisodeStarted0
+15:41:17 - EpisodeEnded0
+15:41:17 - EpisodeStarted1
+15:43:29 - EpisodeEnded1
+15:43:29 - ExamplesSaveStarted
+15:43:29 - ExamplesSaveEnded
+15:43:29 - ExamplesDeleteStarted
+15:43:29 - ExamplesDeleteEnded
+15:43:31 - TrainStarted0
+15:43:31 - From C:\Users\lenovo\AppData\Local\Programs\Python\Python36\lib\site-packages\tensorflow\python\ops\math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
