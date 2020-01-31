@@ -46,7 +46,8 @@ class SelfplayLoop:
 
             game.auto_turn(a)   # do action
 
-        v = np.int8(last_turn_player_reward(game))
+        result = last_turn_player_reward(game)
+        v = np.int8(result)
 
         # insert game reward to examples
         # for the last turned player (reward = v) for another (reward = -v)
@@ -54,10 +55,14 @@ class SelfplayLoop:
             example[position_index][2] = v
             v = -v
 
+        if not config.RESULTS_FOLDER.exists():
+            config.RESULTS_FOLDER.mkdir()
+
         # save sgf
         moves_to_sgf(starting_position,
                      (game.get_pos_of_ind(move) for move in game.moves),
-                     config.RESULTS_FOLDER / 'selfplay.sgf')
+                     config.RESULTS_FOLDER / 'selfplay.sgf',
+                     result)
 
         # save training data
         np.save(config.RESULTS_FOLDER / 'training_data.npy', example)
