@@ -4,7 +4,7 @@ from neural import RNN
 from mcts import MCTS
 import numpy as np
 
-from utils.processing.converting import moves_to_sgf
+from utils.processing.converting import save_sgf
 
 
 class MatchLoop:
@@ -44,9 +44,7 @@ class MatchLoop:
             if game.is_ended:
                 break
 
-        moves_to_sgf(starting_position,
-                     (game.get_pos_of_ind(move) for move in game.moves),
-                     config.RESULTS_FOLDER / 'match.sgf')
+        save_sgf(game, config.RESULTS_FOLDER / 'match.sgf')
 
         if game.score[-1] > game.score[1]:
             return -1

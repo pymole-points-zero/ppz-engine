@@ -1,10 +1,7 @@
-from collections import deque
-import gzip
-
 import numpy as np
 
 from utils.game import last_turn_player_reward, get_field_perc
-from utils.processing.converting import moves_to_sgf
+from utils.processing.converting import save_sgf
 from points import Points
 from mcts import MCTS
 from neural import RNN
@@ -46,8 +43,7 @@ class SelfplayLoop:
 
             game.auto_turn(a)   # do action
 
-        result = last_turn_player_reward(game)
-        v = np.int8(result)
+        v = np.int8(last_turn_player_reward(game))
 
         # insert game reward to examples
         # for the last turned player (reward = v) for another (reward = -v)
@@ -59,10 +55,7 @@ class SelfplayLoop:
             config.RESULTS_FOLDER.mkdir()
 
         # save sgf
-        moves_to_sgf(starting_position,
-                     (game.get_pos_of_ind(move) for move in game.moves),
-                     config.RESULTS_FOLDER / 'selfplay.sgf',
-                     result)
+        save_sgf(game, config.RESULTS_FOLDER / 'selfplay.sgf')
 
         # save training data
         np.save(config.RESULTS_FOLDER / 'training_data.npy', example)

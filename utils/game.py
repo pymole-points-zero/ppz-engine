@@ -4,7 +4,7 @@ import numpy as np
 def last_turn_player_reward(game):
 	if game.score[-game.player] > game.score[game.player]:
 		return 1
-	elif game.score[-game.player] < game.score[game.player]:
+	if game.score[-game.player] < game.score[game.player]:
 		return -1
 
 	return 0
@@ -13,10 +13,6 @@ def last_turn_player_reward(game):
 def get_field_perc(field, player):
 	# game field from player's perspective
 	return field * player
-
-
-def string_repr(field):
-	return ''.join(str(item) for row in field for item in row)
 
 
 def get_symmetries(game, pi):

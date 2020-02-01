@@ -65,7 +65,7 @@ class Points:
 			for x, y in dots:
 				self.make_move(self.get_ind_of_pos(x, y), owner)
 
-		return cross
+		self.starting_crosses = cross
 
 	def change_owner(self, x, y, owner):
 		self.field[x, y, 0] = owner
@@ -86,9 +86,9 @@ class Points:
 		# Automatised method for player turn
 		self.make_move(ind, self.player)
 
-		self.surround_check(mode='surround')		# check all points of p1
-		self.change_turn()							# change turn
-		self.surround_check(mode='suicide')			# check p1 last turn for trapping
+		self.surround_check(mode='surround')		# check surrounds
+		self.change_turn()
+		self.surround_check(mode='suicide')			# check suicide move into house
 
 	def get_ind_of_pos(self, x, y):
 		return self.width * y + x
@@ -128,7 +128,7 @@ class Points:
 		checked = set()
 
 		# флаг, который изменяется на True, если в внутри окружения обнаружатся точки окружаемого
-		surrounded_inside = False
+		surrounded_inside = self.field[start_x, start_y, 0] == -self.player
 
 		while to_check:
 			cur_dot = to_check.pop()
@@ -165,7 +165,7 @@ class Points:
 		if not surrounded_inside:
 			return None, None
 
-		# print('surrounding dots', surrounding_dots)
+		print('surrounding dots', surrounding_dots)
 
 		# создание графа, состоящего из точек цепи
 		graph = {dot: [] for dot in surrounding_dots}
@@ -357,8 +357,20 @@ class Points:
 		return ' '.join(map(str, self.moves))
 
 	@property
+	def field_shape(self):
+		return self.width, self.height
+
+	@property
 	def is_ended(self):
 		return not self.free_dots
+
+	def get_winner(self):
+		if self.score[-1] > self.score[1]:
+			return -1
+		if self.score[1] > self.score[-1]:
+			return 1
+
+		return 0
 
 	cross_functions = (
 		partial(_make_1cross, False),
