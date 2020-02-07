@@ -142,13 +142,13 @@ class PointsTest(unittest.TestCase):
         OXO
         .O.
         """
-        self.game.make_move_coordinate(1, 0, -1)
-
-        self.game.make_move_coordinate(0, 1, -1)
-        self.game.make_move_coordinate(1, 1, 1)
         self.game.make_move_coordinate(2, 1, -1)
 
         self.game.make_move_coordinate(1, 2, -1)
+        self.game.make_move_coordinate(2, 2, 1)
+        self.game.make_move_coordinate(3, 2, -1)
+
+        self.game.make_move_coordinate(2, 3, -1)
 
         self.game.surround_check()
 
@@ -159,3 +159,33 @@ class PointsTest(unittest.TestCase):
         while not self.game.is_ended:
             a = random.choice(list(self.game.free_dots))
             self.game.auto_turn(a)
+
+    def test_grounded(self):
+        self.game.make_move_coordinate(2, 1, -1)
+        self.game.make_move_coordinate(1, 1, -1)
+        self.game.make_move_coordinate(0, 1, -1)
+
+        self.game.grounding()
+        self.game.change_turn()
+        self.game.surround_check(mode='grounding')
+
+        self.assertEqual(self.game.get_winner(), 0, 'Wrong winner')
+
+    def test_surrounder_chain_grounding(self):
+        self.game.make_move_coordinate(2, 1, -1)
+
+        self.game.make_move_coordinate(1, 2, -1)
+        self.game.make_move_coordinate(2, 2, 1)
+        self.game.make_move_coordinate(3, 2, -1)
+
+        self.game.make_move_coordinate(2, 3, -1)
+
+        self.game.surround_check()
+
+        self.game.grounding()
+        self.game.change_turn()
+        self.game.surround_check(mode='grounding')
+
+        print()
+        print(self.game.score)
+        print(self.game)
