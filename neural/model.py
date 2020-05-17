@@ -5,7 +5,7 @@ from tensorflow.keras.optimizers import Adam
 from utils.game import get_field_perc
 from utils.structures import *
 
-
+# TODO добавить +1 к num_actions, чтобы добавить возможность заземления
 args = dotdict({
     'filter_num': 64,
     'epochs': 1,

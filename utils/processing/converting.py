@@ -1,40 +1,105 @@
-# TODO use sgfmill for now but in future adapt for 52 size of board
-from sgfmill import sgf
-from utils.game import last_turn_player_reward
+from unisgf.game_tree import GameTree
+from unisgf.collection import Collection
+from unisgf.property_value import PropertyValue
+from unisgf.rendering import Renderer
+from unisgf import property_value
+from string import ascii_letters
+from itertools import islice
 
-colors = 'bw'
+
+colors = 'BW'
 
 
-def save_sgf(ended_game, sgf_filename):
-    if not ended_game.is_ended:
+class DotsMove(PropertyValue):
+    @staticmethod
+    def validate_string(data: str):
+        if len(data) != 2:
+            raise ValueError
+
+        x, y = data
+        x = ascii_letters.find(x)
+        if x == -1:
+            return ValueError
+        y = ascii_letters.find(y)
+        if y == -1:
+            return ValueError
+
+        return x, y
+
+    @staticmethod
+    def validate_value(value):
+        try:
+            x, y = value
+        except Exception:
+            raise ValueError
+
+        if not isinstance(x, int) or not isinstance(y, int) or x < 0 or y < 0:
+            raise ValueError
+
+        return value
+
+    def render(self):
+        return ascii_letters[self.value[0]] + ascii_letters[self.value[1]]
+
+
+def save_sgf(game, sgf_filename):
+    if not game.is_ended:
+        # TODO raise GameIsNotEnded
         return
 
-    sgf_game = sgf.Sgf_game(size=15)
+    game_tree = GameTree()
+    root = game_tree.get_root()
+    root['SZ'] = [15]
+    root['GM'] = [40]          # game type - dots
+    root['CA'] = ['UTF-8']     # encoding
+    root['RU'] = ['russian']   # rules
 
-    root = sgf_game.get_root()
+    # starting position (stones)
+    if game.starting_crosses[-1]:
+        root['AB'] = game.starting_crosses[-1]
 
-    root.set('GM', 40)  # game type - dots
-    root.set('CA', 'UTF-8')   # encoding
-    root.set('RU', 'russian')   # rules
-
-    # starting position
-    root.set_setup_stones(ended_game.starting_crosses[-1], ended_game.starting_crosses[1])
+    if game.starting_crosses[1]:
+        root['AW'] = game.starting_crosses[1]
 
     # result
-    # TODO добавить поддержку счета
-    winner = ended_game.get_winner()
-    result_string = 'B+R' if winner == -1 else 'W+R' if winner == 1 else '0'
-    root.set('RE', result_string)
+    winner = game.get_winner()
+    if winner == -1:
+        result_string = 'B+' + str(game.score[-1] - game.score[1])
+    elif winner == 1:
+        result_string = 'W+' + str(game.score[1] - game.score[-1])
+    else:
+        result_string = '0'
 
-    # set moves
-    color_index = 0
-    for move in map(ended_game.get_pos_of_ind, ended_game.moves):
-        node = sgf_game.extend_main_sequence()
+    root['RE'] = [result_string]
 
+    # set moves before grounding
+    node = root
+    color_index = 0     # 0 - B, first, -1 in game; 1 - W, second, 1 in game
+
+    if game.grounding_move_index is not None:
+        moves_before_grounding = islice(game.moves, 0, game.grounding_move_index, 1)
+    else:
+        moves_before_grounding = game.moves
+
+    for move in map(game.get_pos_of_ind, moves_before_grounding):
+        node = node.create_child()
+        node[colors[color_index]] = [DotsMove(move)]
         color_index = 1 - color_index
-        node.set_move(colors[color_index], move)
 
-    with open(sgf_filename, 'wb') as f:
-        f.write(sgf_game.serialise())
+    # grounding saves as node with one property and multiple property values
+    if game.grounding_move_index is not None:
+        # skip grounding move and fill property with grounding surround
+        # moves (after grounding move at game.grounding_move_index)
+        node = node.create_child()
+        color_index = 1 - color_index
+        node[colors[color_index]] = [
+            DotsMove(move)
+            for move in map(game.get_pos_of_ind,
+                            islice(game.moves, game.grounding_move_index + 1, len(game.moves), 1))
+        ]
 
-# moves_to_sgf({-1: [(13, 13)], 1: [(3, 3)]}, [(1, 2), (2, 3), (1, 2)], 'file.txt')
+    collection = Collection()
+    collection.append(game_tree)
+
+    renderer = Renderer()
+    renderer.render_file(sgf_filename, collection)

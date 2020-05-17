@@ -63,10 +63,11 @@ class Points:
 
         for owner, dots in cross.items():
             for x, y in dots:
-                self.make_move(self.get_ind_of_pos(x, y), owner)
+                self.make_move_coordinate(x, y, owner)
 
         self.starting_crosses = cross
         self.is_ended = False
+        self.grounding_move_index = None
 
     def change_owner(self, x, y, owner):
         self.field[x, y, 0] = owner
@@ -85,7 +86,8 @@ class Points:
 
     def auto_turn(self, ind):
         if ind == self.field_size:
-            # ход с заземлением
+            # Ход с заземлением добавим в последовательность движений.
+            # Все ходы после совершаются в процессе окружения.
             self.moves.append(ind)
             self.grounding()
             self.change_turn()
@@ -127,7 +129,7 @@ class Points:
         return 0 <= x <= self.width - 1 and 0 <= y <= self.height - 1
 
     def chain_check(self, start_x, start_y, visited):
-        # self.player - the surrounding
+        # self.player - surrounder
         # -self.player - surrounded
 
         # исключаем поиски цепи, которые начинаются с точки, принадлежащей окружающему, а не окружаемому
@@ -290,18 +292,16 @@ class Points:
     def grounding(self):
         for x in range(self.width):
             for y in range(self.height):
-                # выбираем свои точки, которые никем не окружены и которые в последствии противник будет окружать
+                # из всех поставленных точек выбираем те, которые никем не окружены и
+                # которые принадлежат игроку, выполняющему заземление
                 if self.field[x, y, 0] == self.player and self.field[x, y, 1] == 0:
                     # print('YES, I AM NOT GROUNDED', x, y)
                     for neigh_x, neigh_y in self.neighbors_hor_ver(x, y):
                         if (self.is_on_board(neigh_x, neigh_y)
                                 and self.field[neigh_x, neigh_y, 0] == 0
                                 and self.field[x, y, 1] == 0):
-                            # во все свободные клетки вокруг текущей помещаем точки
-                            # TODO подумать, как обозначить заземление в переменной moves.
-                            #  Дерево MCTS должно отличать заземление от обычной последовательности ходов.
-                            # TODO продумать терминальную стадию игры
 
+                            # во все свободные клетки вокруг текущей помещаем точки
                             self.make_move_coordinate(neigh_x, neigh_y, -self.player)
 
     def _random_crosses(self):
@@ -327,29 +327,21 @@ class Points:
             if self._points_distance(cross1_center, cross2_center) > 4:
                 break
 
-        crosses_centers = [
-            cross1_center,
-            cross2_center
-        ]
+        cross_centers = [cross1_center, cross2_center]
 
         # reflect by horizontal and vertical side
         vertical_reflection = random.choice([-1, 1])
-        for x, y in list(crosses_centers):
-            crosses_centers.append((-x, vertical_reflection * y))
+        for x, y in list(cross_centers):
+            cross_centers.append((-x, vertical_reflection * y))
 
         # make absolute coords
         board_centerW, board_centerH = self.width // 2, self.height // 2
-        for i in range(len(crosses_centers)):
-            c = crosses_centers[i]
-            crosses_centers[i] = (c[0] + board_centerW, c[1] + board_centerH)
+        cross_centers = [(c[0] + board_centerW, c[1] + board_centerH) for c in cross_centers]
 
         # make crosses
-        crosses = {
-            -1: [],
-            1: []
-        }
+        crosses = { -1: [], 1: [] }
 
-        for x, y in crosses_centers:
+        for x, y in cross_centers:
             crosses[-1].append((int(x - 1), int(y - 1)))
             crosses[-1].append((int(x), int(y)))
             crosses[1].append((int(x), int(y - 1)))
@@ -384,12 +376,11 @@ class Points:
         return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
 
     def change_turn(self):
-        # Смена хода
         self.turn += 1
         self.player = -self.player
 
-    def get_state(self):
-        return ' '.join(map(str, self.moves))
+    def get_state(self) -> int:
+        return tuple(self.moves).__hash__()
 
     @property
     def field_shape(self):

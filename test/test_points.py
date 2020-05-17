@@ -151,8 +151,9 @@ class PointsTest(unittest.TestCase):
         self.game.make_move_coordinate(2, 3, -1)
 
         self.game.surround_check()
+        # print(self.game)
 
-        self.assertEqual(self.game.field[1, 1, 1], -1, 'Point is not surrounded.')
+        self.assertEqual(self.game.field[2, 2, 1], -1, 'Point is not surrounded.')
         self.assertEqual(self.game.score[-1], 1, 'Wrong score.')
 
     def test_random_moves(self):
@@ -187,5 +188,5 @@ class PointsTest(unittest.TestCase):
         self.game.surround_check(mode='grounding')
 
         print()
-        print(self.game.score)
-        print(self.game)
+        # print(self.game.score)
+        # print(self.game)
