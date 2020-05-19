@@ -21,7 +21,7 @@ class SelfplayLoop:
 
         # сохраняем sgf игры
         config.RESULTS_FOLDER.mkdir(parents=True, exist_ok=True)
-        sgf_path = str(config.RESULTS_FOLDER / 'selfplay.sgf')
+        sgf_path = str(config.RESULTS_FOLDER / 'loops.sgf')
         save_sgf(game, sgf_path)
 
         # сохраняем файл тренировочных данных
@@ -46,6 +46,7 @@ class SelfplayLoop:
 
         # game loop
         while not game.is_ended:
+            mcts.search(game)
             policy = mcts.get_policy(game)  # all actions' probabilities (not possible actions with 0 probability)
             # print('policy', policy)
             a = int(np.random.choice(len(policy), p=policy))

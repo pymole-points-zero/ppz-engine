@@ -7,10 +7,9 @@ from collections import defaultdict
 EPS = 1e-8
 
 
+# TODO add multiprocessing
 class MCTS:
 	def __init__(self, sim_count, nnet, c_puct=1):
-		'''All nodes are integers'''
-
 		self.sim_count = sim_count
 		self.nnet = nnet
 		self.Rsa = defaultdict(int)		# action Q
@@ -20,11 +19,6 @@ class MCTS:
 		self.c_puct = c_puct
 
 	def get_policy(self, game):
-		# search calls
-		for i in range(self.sim_count):
-			self.game = copy.deepcopy(game)
-			self.search()
-
 		# policy distribution
 		s = game.get_state()
 
@@ -34,11 +28,17 @@ class MCTS:
 		for a in game.free_dots:
 			child = (s, a)
 			if child in self.Nsa:
-				policy[a] = self.Nsa[child]/denom
+				policy[a] = self.Nsa[child] / denom
 
 		return np.array(policy)
 
-	def search(self):
+	def search(self, game):
+		# search calls
+		for i in range(self.sim_count):
+			self.game = copy.deepcopy(game)
+			self.search_recursive()
+
+	def search_recursive(self):
 		s = self.game.get_state()
 
 		if self.game.is_ended:
@@ -65,13 +65,14 @@ class MCTS:
 
 		try:
 			self.game.auto_turn(a)
-		except:
+		except Exception:
 			print(self.game)
 			print(a)
 
 			raise Exception
+
 		# print(self.game, a)
-		v = self.search()
+		v = self.search_recursive()
 
 		self.Rsa[(s, a)] += v
 		self.Nsa[(s, a)] += 1

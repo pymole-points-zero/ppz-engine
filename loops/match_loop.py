@@ -41,20 +41,21 @@ class MatchLoop:
         first_mcts = MCTS(self.args.parameters['compare_simulations'], first_nnet)
         second_mcts = MCTS(self.args.parameters['compare_simulations'], second_nnet)
 
-        MCTSs = (first_mcts, second_mcts,)
+        MCTSs = {-1: first_mcts, 1: second_mcts}
 
         game = Points(*self.args.parameters['field_size'])
-        starting_position = game.reset(random_crosses=self.args.parameters['random_crosses'])
 
         # match neural networks
         while not game.is_ended:
+            cur_mcts = MCTSs[game.player]
+            cur_mcts.search(game)
+
             # all actions' probabilities (not possible actions with 0 probability)
-            pi = MCTSs[game.player].get_policy(game)
+            pi = cur_mcts.get_policy(game)
 
             # best action
             a = int(np.argmax(pi))
 
             game.auto_turn(a)
-
 
         return game

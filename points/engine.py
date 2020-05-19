@@ -5,6 +5,8 @@ from itertools import islice
 from functools import partial
 
 
+# TODO undo
+
 class Points:
     sides = (
         (-1, 0),
@@ -57,8 +59,6 @@ class Points:
         if random_crosses:
             cross = self._random_crosses()
         elif cross is None:
-            cross = {-1: [], 1: []}
-        else:
             cross = self._make_1cross(center=True)
 
         for owner, dots in cross.items():
