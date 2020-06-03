@@ -20,7 +20,7 @@ parser_engine.add_argument('--random_crosses', action='store_true')
 
 # workaround to run argparse subparsers required on <=3.6
 version = platform.python_version_tuple()
-if version[1] <= 6:
+if int(version[1]) <= 6:
     subparsers = parser.add_subparsers(dest='mode')
 else:
     subparsers = parser.add_subparsers(dest='mode', required=True)
