@@ -1,6 +1,6 @@
 # Using model weights engine generates game match and writes results to stdout.
 import argparse
-import json
+import platform
 import os
 
 # shutdown tensorflow
@@ -17,7 +17,14 @@ parser_engine.add_argument('--simulations', type=int, required=True)
 parser_engine.add_argument('--random_crosses', action='store_true')
 
 # add different modes as subcommands
-subparsers = parser.add_subparsers(dest='mode', required=True)
+
+# workaround to run argparse subparsers required on <=3.6
+version = platform.python_version_tuple()
+if version[1] <= 6:
+    subparsers = parser.add_subparsers(dest='mode')
+else:
+    subparsers = parser.add_subparsers(dest='mode', required=True)
+
 
 parser_selfplay = subparsers.add_parser('selfplay', parents=[parser_engine], add_help=False,
                                         help='Run selfplay loop to generate example')
