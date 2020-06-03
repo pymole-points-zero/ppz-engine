@@ -1,6 +1,7 @@
 import config
 from points import Points
-from neural import RNN
+from neural.model import prepare_predict
+from tensorflow.keras.models import load_model
 from mcts import MCTS
 import numpy as np
 
@@ -28,30 +29,30 @@ class MatchLoop:
 
     def match(self):
         # load candidate and best network weights
-        candidate_nnet = RNN.from_file(self.args.candidate_weights)
-        best_nnet = RNN.from_file(self.args.best_weights)
+        candidate_model = load_model(self.args.candidate_weights)
+        best_model = load_model(self.args.best_weights)
 
         # определяем, кто ходит первым
         if self.args.candidate_turns_first:
-            first_nnet, second_nnet = candidate_nnet, best_nnet
+            first_model, second_model = candidate_model, best_model
         else:
-            first_nnet, second_nnet = best_nnet, candidate_nnet
+            first_model, second_model = best_model, candidate_model
 
         # setup MCTS for both nets
-        first_mcts = MCTS(self.args.parameters['compare_simulations'], first_nnet)
-        second_mcts = MCTS(self.args.parameters['compare_simulations'], second_nnet)
+        first_mcts = MCTS(self.args.simulations, first_model)
+        second_mcts = MCTS(self.args.simulations, second_model)
 
         MCTSs = {-1: first_mcts, 1: second_mcts}
 
-        game = Points(*self.args.parameters['field_size'])
+        game = Points(self.args.field_width, self.args.field_height)
+        game.reset()
 
         # match neural networks
         while not game.is_ended:
             cur_mcts = MCTSs[game.player]
             cur_mcts.search(game)
 
-            # all actions' probabilities (not possible actions with 0 probability)
-            pi = cur_mcts.get_policy(game)
+            pi = cur_mcts.get_dirichlet_policy(game)
 
             # best action
             a = int(np.argmax(pi))

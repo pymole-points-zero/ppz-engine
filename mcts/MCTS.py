@@ -3,20 +3,25 @@ import numpy as np
 from utils.game import last_turn_player_reward, get_field_perc
 import copy
 from collections import defaultdict
+from neural.model import prepare_predict
 
 EPS = 1e-8
 
 
-# TODO add multiprocessing
+# TODO root parallelization
+# TODO add option to delete all node except root and its children to release memory
+# TODO get optimal alpha value
 class MCTS:
-	def __init__(self, sim_count, nnet, c_puct=1):
+	def __init__(self, sim_count, model, c_puct=1, alpha=0.05, dirichlet_impact=0.25):
 		self.sim_count = sim_count
-		self.nnet = nnet
+		self.model = model
 		self.Rsa = defaultdict(int)		# action Q
 		self.Nsa = defaultdict(int)		# n times the state was visited
 		self.N = defaultdict(int)
 		self.P = {}						# inner policy for valid actions
 		self.c_puct = c_puct
+		self.alpha = alpha
+		self.dirichlet_impact = dirichlet_impact
 
 	def get_policy(self, game):
 		# policy distribution
@@ -30,7 +35,21 @@ class MCTS:
 			if child in self.Nsa:
 				policy[a] = self.Nsa[child] / denom
 
-		return np.array(policy)
+		return np.array(policy, dtype=np.float)
+
+	def get_dirichlet_policy(self, game):
+		policy = self.get_policy(game)
+
+		available_moves = list(game.free_dots)
+
+		# calculate dirichlet noise for possible actions
+		d = np.random.dirichlet(np.full(len(available_moves), self.alpha))
+		dirichlet_policy = (1 - self.dirichlet_impact) * policy[available_moves] + self.dirichlet_impact * d
+
+		# insert dirichlet noise to prior policy
+		np.put(policy, available_moves, dirichlet_policy)
+
+		return policy
 
 	def search(self, game):
 		# search calls
@@ -83,7 +102,7 @@ class MCTS:
 	def expansion(self, s):
 		f = get_field_perc(self.game.field, self.game.player)
 
-		Pi, v = self.nnet.predict(f)  # Possibility of each action and value of current game state
+		Pi, v = prepare_predict(self.model, f)  # Possibility of each action and value of current game state
 
 		self.P[s] = tuple(zip(self.game.free_dots, map(Pi.__getitem__, self.game.free_dots)))
 

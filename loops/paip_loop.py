@@ -2,7 +2,7 @@
 import random
 from points.engine import Points
 from mcts.MCTS import MCTS
-from neural import RNN
+from tensorflow.keras.models import load_model
 import numpy as np
 
 
@@ -29,16 +29,26 @@ class PAIPLoop:
         }
 
     def run(self):
-        self.nnet = RNN.from_file(self.args.weights)
+        self.model = load_model(self.args.weights)
         self.quit_event = False
 
         # open named pipe file for reading
-        pipe = open(self.args.pipe, 'r')
+        # self.log = open('/home/pymole/PycharmProjects/ppz-engine/lol' + str(random.randint(0, 100)), 'w')
 
+        self.input = open(self.args.input_pipe, 'r')
+        self.out = open(self.args.output_pipe, 'w')
+        #
+        # self.log.write(self.args.output_pipe + ' ' + self.args.input_pipe)
+        # self.log.flush()
+        # TODO select vs readline to reduce cpu usage
         while not self.quit_event:
-            command_line = pipe.readline()
+            command_line = self.input.readline()
             if command_line:
+                # self.log.write(command_line)
+                # self.log.flush()
                 self.dispatch(command_line)
+
+        self.input.close()
 
     def dispatch(self, command_line):
         # parse command line
@@ -47,13 +57,17 @@ class PAIPLoop:
         # execute command
         try:
             answer_arguments = self.commands_dispatch_table[command_name](*args)
-            answer = '=' + command_id + command_name
+            answer = '= ' + command_id + ' ' + command_name
             if answer_arguments is not None:
-                answer += ' '.join(answer_arguments)
+                answer += ' ' + ' '.join(answer_arguments)
         except Exception:
-            answer = '? ' + command_id + command_name
+            answer = '? ' + command_id + ' ' + command_name
         finally:
-            print(answer)
+            self.out.write(answer + '\n')
+            self.out.flush()
+            # self.log.write(answer + '\n')
+            # self.log.flush()
+            # print(answer)
 
     def list_commands(self):
         return self.commands_dispatch_table.keys()
@@ -62,13 +76,15 @@ class PAIPLoop:
         self.quit_event = True
 
     def init(self, width, height, random_seed):
+        # TODO throw error if field size of init not equal to args field size
         random.seed(int(random_seed))
+
         # init game with center crosses
-        self.game = Points(int(width), int(height))
-        self.game.reset(random_crosses=False)
+        self.game = Points(self.args.field_width, self.args.field_height)
+        self.game.reset()
 
         # init MCTS
-        self.mcts = MCTS(self.args.parameters['example_simulations'], self.nnet, c_puct=4)
+        self.mcts = MCTS(self.args.simulations, self.model, c_puct=4)
 
     def author(self):
         return ('Roman Shevela',)
@@ -87,10 +103,13 @@ class PAIPLoop:
             raise Exception
 
         if color == '1':
-            color = 1
+            player = 1
         elif color == '0':
-            color = -1
+            player = -1
         else:
+            raise Exception
+
+        if player != self.game.player:
             raise Exception
 
         # players switching every time
@@ -101,9 +120,11 @@ class PAIPLoop:
         self.game.surround_check(mode='suicide')  # check suicide move into house
 
         if not self.game.free_dots:
-            self.is_ended = True
+            self.game.is_ended = True
 
-    def gen_move(self):
+        return x, y, color
+
+    def gen_move(self, color):
         if self.game is None or self.game.is_ended or self.mcts is None:
             raise Exception
 
@@ -115,4 +136,4 @@ class PAIPLoop:
         x, y = self.game.get_pos_of_ind(a)
         color = '0' if self.game.player == -1 else '1'
 
-        return x, y, color
+        return str(x), str(y), color

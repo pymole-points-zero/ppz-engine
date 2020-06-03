@@ -1,11 +1,12 @@
-import numpy as np
-
 from utils.game import last_turn_player_reward, get_field_perc
 from utils.processing.converting import save_sgf
 from points import Points
 from mcts import MCTS
-from neural import RNN
 import config
+
+import numpy as np
+import gzip
+from tensorflow.keras.models import load_model
 
 
 class SelfplayLoop:
@@ -19,30 +20,32 @@ class SelfplayLoop:
         if not config.RESULTS_FOLDER.exists():
             config.RESULTS_FOLDER.mkdir()
 
-        # сохраняем sgf игры
+        # save sgf
         config.RESULTS_FOLDER.mkdir(parents=True, exist_ok=True)
-        sgf_path = str(config.RESULTS_FOLDER / 'loops.sgf')
+        sgf_path = str(config.RESULTS_FOLDER / 'selfplay.sgf')
         save_sgf(game, sgf_path)
 
-        # сохраняем файл тренировочных данных
-        example_path = str(config.RESULTS_FOLDER / 'training_data.npy')
-        np.save(example_path, example)
+        # save numpy training example in .gz
+        example_path = str(config.RESULTS_FOLDER / 'training_data.npy.gz')
+        with gzip.open(example_path, 'w') as f:
+            np.save(f, example)
 
-        # печатаем информацию о том, куда сохранены результаты
+        # print result paths for client
         print(sgf_path, example_path, sep='\n')
         # print("Generated example for", (time.time() - start_time) / 3600, "hours")
 
     def generate_example(self):
         # load training weights
-        nnet = RNN.from_file(self.args.weights)
+        model = load_model(self.args.weights)
 
         # создаем экземпляр игры
-        game = Points(*self.args.parameters['field_size'])
-        starting_position = game.reset(random_crosses=self.args.parameters['random_crosses'])
+        game = Points(self.args.field_width, self.args.field_height)
+        game.reset(random_crosses=self.args.random_crosses)
 
-        mcts = MCTS(self.args.parameters['example_simulations'], nnet, c_puct=4)
+        mcts = MCTS(self.args.simulations, model, c_puct=4)
 
-        example = []
+        fields = []
+        policies = []
 
         # game loop
         while not game.is_ended:
@@ -53,7 +56,9 @@ class SelfplayLoop:
 
             # field, policy, value
             # don't have reward for now
-            example.append([get_field_perc(game.field, game.player), policy, None])
+
+            fields.append(get_field_perc(game.field, game.player))
+            policies.append(policy)
 
             game.auto_turn(a)   # do action
 
@@ -61,8 +66,15 @@ class SelfplayLoop:
 
         # insert game reward to examples
         # for the last turned player reward = v for another reward = -v
-        for position_index in range(len(example) - 1, -1, -1):
-            example[position_index][2] = v
+        values = np.ndarray(shape=(len(fields),), dtype=np.int8)
+        for position_index in range(len(fields) - 1, -1, -1):
+            values[position_index] = v
             v = -v
+
+        example = np.array(list(zip(fields, policies, values)), dtype=[
+            ('field', 'i1', (game.width, game.height, 2)),
+            ('policy', 'f8', (game.field_size,)),
+            ('value', 'i1')
+        ])
 
         return game, example

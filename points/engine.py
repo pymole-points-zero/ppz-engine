@@ -6,6 +6,7 @@ from functools import partial
 
 
 # TODO undo
+# TODO refactor reset logic
 
 class Points:
     sides = (
@@ -47,7 +48,7 @@ class Points:
 			1 - окружена вторым игроком
 	'''
 
-    def reset(self, random_crosses=True, cross=None):
+    def reset(self, random_crosses=False, custom_crosses=None):
         self.field = np.zeros((self.width, self.height, 2), dtype=np.int8)
         self.turn = 1
         self.score = {-1: 0, 1: 0}
@@ -56,10 +57,12 @@ class Points:
         self.free_dots = set(range(self.field_size))
         self.player = -1
 
-        if random_crosses:
+        if custom_crosses is not None:
+            cross = custom_crosses
+        elif random_crosses:
             cross = self._random_crosses()
-        elif cross is None:
-            cross = self._make_1cross(center=True)
+        else:
+            cross = {-1: [], 1: []}
 
         for owner, dots in cross.items():
             for x, y in dots:
@@ -305,7 +308,14 @@ class Points:
                             self.make_move_coordinate(neigh_x, neigh_y, -self.player)
 
     def _random_crosses(self):
-        crosses_func = random.choice(self.cross_functions)
+        cross_functions = (
+            partial(self._make_1cross, False),
+            partial(self._make_1cross, True),
+            self._make_4crosses,
+            lambda: {-1: [], 1: []}
+        )
+
+        crosses_func = random.choice(cross_functions)
         return crosses_func()
 
     def _make_4crosses(self):
@@ -394,9 +404,3 @@ class Points:
 
         return 0
 
-    cross_functions = (
-        partial(_make_1cross, False),
-        partial(_make_1cross, True),
-        _make_4crosses,
-        lambda: {-1: [], 1: []}
-    )

@@ -49,7 +49,7 @@ def save_sgf(game, sgf_filename):
 
     game_tree = GameTree()
     root = game_tree.get_root()
-    root['SZ'] = [15]
+    root['SZ'] = [game.width, game.height]
     root['GM'] = [40]          # game type - dots
     root['CA'] = ['UTF-8']     # encoding
     root['RU'] = ['russian']   # rules
