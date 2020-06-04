@@ -12,7 +12,7 @@ EPS = 1e-8
 # TODO add option to delete all node except root and its children to release memory
 # TODO get optimal alpha value
 class MCTS:
-	def __init__(self, sim_count, model, c_puct=1, alpha=0.05, dirichlet_impact=0.25):
+	def __init__(self, sim_count, model, c_puct=4, alpha=0.05, dirichlet_impact=0.25):
 		self.sim_count = sim_count
 		self.model = model
 		self.Rsa = defaultdict(int)		# action Q

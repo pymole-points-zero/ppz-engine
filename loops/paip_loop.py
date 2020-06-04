@@ -4,7 +4,7 @@ from points.engine import Points
 from mcts.MCTS import MCTS
 from tensorflow.keras.models import load_model
 import numpy as np
-
+import os
 
 class PAIPLoop:
     def __init__(self, args):
@@ -79,9 +79,16 @@ class PAIPLoop:
         # TODO throw error if field size of init not equal to args field size
         random.seed(int(random_seed))
 
-        # init game with center crosses
+        # init game
         self.game = Points(self.args.field_width, self.args.field_height)
-        self.game.reset()
+        if self.args.first_crosses is None and self.args.second_crosses is None:
+            custom_crosses = None
+        else:
+            custom_crosses = {
+                -1: [] if self.args.first_crosses is None else self.args.first_crosses,
+                1: [] if self.args.second_crosses is None else self.args.second_crosses,
+            }
+        self.game.reset(custom_crosses=custom_crosses)
 
         # init MCTS
         self.mcts = MCTS(self.args.simulations, self.model, c_puct=4)
@@ -102,21 +109,16 @@ class PAIPLoop:
         if self.game is None or self.game.is_ended:
             raise Exception
 
-        if color == '1':
-            player = 1
-        elif color == '0':
-            player = -1
-        else:
-            raise Exception
-
-        if player != self.game.player:
-            raise Exception
+        # low level game control
+        player = self.parse_color(color)
 
         # players switching every time
-        self.game.make_move_coordinate(int(x), int(y), self.game.player)
+        self.game.make_move_coordinate(int(x), int(y), player)
 
+        self.game.player = player
         self.game.surround_check(mode='surround')  # check surrounds
-        self.game.change_turn()
+        self.game.turn_tick()
+        self.game.player = -self.game.player
         self.game.surround_check(mode='suicide')  # check suicide move into house
 
         if not self.game.free_dots:
@@ -128,6 +130,9 @@ class PAIPLoop:
         if self.game is None or self.game.is_ended or self.mcts is None:
             raise Exception
 
+        player = self.parse_color(color)
+        self.game.player = player
+
         self.mcts.search(self.game)
         policy = self.mcts.get_policy(self.game)
 
@@ -137,3 +142,11 @@ class PAIPLoop:
         color = '0' if self.game.player == -1 else '1'
 
         return str(x), str(y), color
+
+    def parse_color(self, color):
+        if color == '1':
+            return 1
+        if color == '0':
+            return -1
+
+        raise Exception

@@ -7,7 +7,7 @@ from functools import partial
 
 # TODO undo
 # TODO refactor reset logic
-
+# TODO adapt to non linear turns like two move of one player in a row
 class Points:
     sides = (
         (-1, 0),
@@ -386,8 +386,11 @@ class Points:
         return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
 
     def change_turn(self):
-        self.turn += 1
+        self.turn_tick()
         self.player = -self.player
+
+    def turn_tick(self):
+        self.turn += 1
 
     def get_state(self) -> int:
         return tuple(self.moves).__hash__()

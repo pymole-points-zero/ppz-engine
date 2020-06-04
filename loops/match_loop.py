@@ -23,6 +23,9 @@ class MatchLoop:
         save_sgf(game, match_file_path)
 
         result = game.get_winner()
+        # inverse reward
+        if self.args.candidate_turns_first:
+            result = -result
 
         # выводим расположение файла с матчем и результат матча
         print(match_file_path, result, sep='\n')

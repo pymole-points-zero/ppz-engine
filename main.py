@@ -2,7 +2,7 @@
 import argparse
 import platform
 import os
-
+# TODO change dir to current
 # shutdown tensorflow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -15,6 +15,8 @@ parser_engine.add_argument('--field_width', type=int, required=True)
 parser_engine.add_argument('--field_height', type=int, required=True)
 parser_engine.add_argument('--simulations', type=int, required=True)
 parser_engine.add_argument('--random_crosses', action='store_true')
+parser_engine.add_argument('--first_crosses', type=str, required=False)
+parser_engine.add_argument('--second_crosses', type=str, required=False)
 
 # add different modes as subcommands
 
@@ -42,9 +44,18 @@ parser_protocol.add_argument('--weights', type=str, required=True)
 parser_protocol.add_argument('--input_pipe', type=str, required=True)
 parser_protocol.add_argument('--output_pipe', type=str, required=True)
 
-
 args = parser.parse_args()
 
+
+# crosses example: 5,4;4,5
+def parse_crosses(crosses):
+    return [tuple(map(int, cross.split(','))) for cross in crosses.split(';')]
+
+
+if args.first_crosses is not None:
+    args.first_crosses = parse_crosses(args.first_crosses)
+if args.second_crosses is not None:
+    args.second_crosses = parse_crosses(args.second_crosses)
 
 if args.mode == 'selfplay':
     from loops import SelfplayLoop
