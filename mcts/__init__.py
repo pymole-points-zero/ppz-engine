@@ -1,3 +1,3 @@
-from .MCTS import MCTS
+from .MCTS import MCTSRootParallelizer, MCTS
 
-__all__ = ('MCTS',)
+__all__ = ('MCTSRootParallelizer', 'MCTS')

@@ -1,10 +1,10 @@
 # Points AI protocol 6
 import random
 from points.engine import Points
-from mcts.MCTS import MCTS
+from mcts import MCTSRootParallelizer, MCTS
 from tensorflow.keras.models import load_model
 import numpy as np
-import os
+
 
 class PAIPLoop:
     def __init__(self, args):
@@ -33,7 +33,7 @@ class PAIPLoop:
         self.quit_event = False
 
         # open named pipe file for reading
-        # self.log = open('/home/pymole/PycharmProjects/ppz-engine/lol' + str(random.randint(0, 100)), 'w')
+        self.log = open('/home/pymole/PycharmProjects/ppz-engine/lol' + str(random.randint(0, 100)), 'w')
 
         self.input = open(self.args.input_pipe, 'r')
         self.out = open(self.args.output_pipe, 'w')
@@ -44,8 +44,8 @@ class PAIPLoop:
         while not self.quit_event:
             command_line = self.input.readline()
             if command_line:
-                # self.log.write(command_line)
-                # self.log.flush()
+                self.log.write(command_line)
+                self.log.flush()
                 self.dispatch(command_line)
 
         self.input.close()
@@ -60,13 +60,18 @@ class PAIPLoop:
             answer = '= ' + command_id + ' ' + command_name
             if answer_arguments is not None:
                 answer += ' ' + ' '.join(answer_arguments)
-        except Exception:
+        except Exception as e:
             answer = '? ' + command_id + ' ' + command_name
+            self.log.write(str(e))
+            import sys, traceback
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            traceback.print_tb(exc_traceback, file=self.log)
+            self.log.flush()
         finally:
             self.out.write(answer + '\n')
             self.out.flush()
-            # self.log.write(answer + '\n')
-            # self.log.flush()
+            self.log.write(answer + '\n')
+            self.log.flush()
             # print(answer)
 
     def list_commands(self):
@@ -91,7 +96,7 @@ class PAIPLoop:
         self.game.reset(custom_crosses=custom_crosses)
 
         # init MCTS
-        self.mcts = MCTS(self.args.simulations, self.model, c_puct=4)
+        self.mcts = MCTS(self.model, self.args.simulations, c_puct=10)
 
     def author(self):
         return ('Roman Shevela',)
@@ -134,7 +139,7 @@ class PAIPLoop:
         self.game.player = player
 
         self.mcts.search(self.game)
-        policy = self.mcts.get_policy(self.game)
+        policy = self.mcts.get_dirichlet_policy(self.game)
 
         a = int(np.argmax(policy))
 

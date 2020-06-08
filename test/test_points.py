@@ -15,14 +15,15 @@ class PointsTest(unittest.TestCase):
         ##.##
         #####
 
-        self.game.make_move_coordinate(2, 1, -1)
-        self.game.make_move_coordinate(3, 2, -1)
-        self.game.make_move_coordinate(2, 3, -1)
-        self.game.make_move_coordinate(1, 2, -1)
+        self.game.make_move_coordinate(2, 1, 0)
+        self.game.make_move_coordinate(3, 2, 0)
+        self.game.make_move_coordinate(2, 3, 0)
+        self.game.make_move_coordinate(1, 2, 0)
 
         self.game.surround_check()
 
-        self.assertEqual(self.game.field[2, 2, 1], 0, 'House is not empty')
+        self.assertFalse(self.game.owners[2, 2, 0], 'House is not empty')
+        self.assertFalse(self.game.owners[2, 2, 1], 'House is not empty')
 
     def test_suicide(self):
         #####
@@ -31,17 +32,17 @@ class PointsTest(unittest.TestCase):
         ##.##
         #####
 
-        self.game.make_move_coordinate(2, 1, -1)
-        self.game.make_move_coordinate(1, 2, -1)
-        self.game.make_move_coordinate(3, 2, -1)
-        self.game.make_move_coordinate(2, 3, -1)
+        self.game.make_move_coordinate(2, 1, 0)
+        self.game.make_move_coordinate(1, 2, 0)
+        self.game.make_move_coordinate(3, 2, 0)
+        self.game.make_move_coordinate(2, 3, 0)
 
         self.game.make_move_coordinate(2, 2, 1)
 
         self.game.surround_check(mode='suicide')
 
-        self.assertEqual(self.game.field[2, 2, 1], -1, 'Suicide point is not surrounded.')
-        self.assertEqual(self.game.score[-1], 1, 'Wrong score.')
+        self.assertTrue(self.game.owners[2, 2, 0], 'Suicide point is not surrounded.')
+        self.assertEqual(self.game.score[0], 1, 'Wrong score.')
 
     def test_one_point_multiple_surrounds(self):
         """
@@ -52,25 +53,25 @@ class PointsTest(unittest.TestCase):
         #####
         """
 
-        self.game.make_move_coordinate(1, 1, -1)
-        self.game.make_move_coordinate(3, 1, -1)
+        self.game.make_move_coordinate(1, 1, 0)
+        self.game.make_move_coordinate(3, 1, 0)
 
-        self.game.make_move_coordinate(0, 2, -1)
+        self.game.make_move_coordinate(0, 2, 0)
         self.game.make_move_coordinate(1, 2, 1)
         self.game.make_move_coordinate(3, 2, 1)
-        self.game.make_move_coordinate(4, 2, -1)
+        self.game.make_move_coordinate(4, 2, 0)
 
-        self.game.make_move_coordinate(1, 3, -1)
-        self.game.make_move_coordinate(3, 3, -1)
+        self.game.make_move_coordinate(1, 3, 0)
+        self.game.make_move_coordinate(3, 3, 0)
 
-        self.game.make_move_coordinate(2, 2, -1)
+        self.game.make_move_coordinate(2, 2, 0)
 
         self.game.surround_check()
 
-        self.assertEqual(self.game.field[1, 2, 1], -1, 'First point is not surrounded.')
-        self.assertEqual(self.game.field[3, 2, 1], -1, 'Second point is not surrounded.')
+        self.assertTrue(self.game.owners[1, 2, 0], 'First point is not surrounded.')
+        self.assertTrue(self.game.owners[3, 2, 0], 'Second point is not surrounded.')
 
-        self.assertEqual(self.game.score[-1], 2, 'Wrong score.')
+        self.assertEqual(self.game.score[0], 2, 'Wrong score.')
         self.assertEqual(self.game.score[1], 0, 'Wrong score.')
 
     def test_graph_while(self):
@@ -82,28 +83,28 @@ class PointsTest(unittest.TestCase):
         .OOOO.
         """
 
-        self.game.make_move_coordinate(1, 0, -1)
-        self.game.make_move_coordinate(2, 0, -1)
-        self.game.make_move_coordinate(3, 0, -1)
-        self.game.make_move_coordinate(4, 0, -1)
+        self.game.make_move_coordinate(1, 0, 0)
+        self.game.make_move_coordinate(2, 0, 0)
+        self.game.make_move_coordinate(3, 0, 0)
+        self.game.make_move_coordinate(4, 0, 0)
 
-        self.game.make_move_coordinate(0, 1, -1)
+        self.game.make_move_coordinate(0, 1, 0)
         self.game.make_move_coordinate(2, 1, 1)
-        self.game.make_move_coordinate(5, 1, -1)
+        self.game.make_move_coordinate(5, 1, 0)
 
-        self.game.make_move_coordinate(0, 2, -1)
-        self.game.make_move_coordinate(2, 2, -1)
-        self.game.make_move_coordinate(3, 2, -1)
-        self.game.make_move_coordinate(4, 2, -1)
+        self.game.make_move_coordinate(0, 2, 0)
+        self.game.make_move_coordinate(2, 2, 0)
+        self.game.make_move_coordinate(3, 2, 0)
+        self.game.make_move_coordinate(4, 2, 0)
 
-        self.game.make_move_coordinate(0, 3, -1)
-        self.game.make_move_coordinate(5, 3, -1)
+        self.game.make_move_coordinate(0, 3, 0)
+        self.game.make_move_coordinate(5, 3, 0)
 
-        self.game.make_move_coordinate(1, 4, -1)
-        self.game.make_move_coordinate(2, 4, -1)
-        self.game.make_move_coordinate(3, 4, -1)
-        self.game.make_move_coordinate(4, 4, -1)
-
+        self.game.make_move_coordinate(1, 4, 0)
+        self.game.make_move_coordinate(2, 4, 0)
+        self.game.make_move_coordinate(3, 4, 0)
+        self.game.make_move_coordinate(4, 4, 0)
+        # TODO checks
         self.game.surround_check()
 
     def test_shortest_chain(self):
@@ -115,26 +116,26 @@ class PointsTest(unittest.TestCase):
         .OOO.
         """
 
-        self.game.make_move_coordinate(1, 0, -1)
+        self.game.make_move_coordinate(1, 0, 0)
 
-        self.game.make_move_coordinate(0, 1, -1)
-        self.game.make_move_coordinate(2, 1, -1)
+        self.game.make_move_coordinate(0, 1, 0)
+        self.game.make_move_coordinate(2, 1, 0)
 
-        self.game.make_move_coordinate(0, 2, -1)
-        self.game.make_move_coordinate(2, 2, -1)
-        self.game.make_move_coordinate(3, 2, -1)
+        self.game.make_move_coordinate(0, 2, 0)
+        self.game.make_move_coordinate(2, 2, 0)
+        self.game.make_move_coordinate(3, 2, 0)
 
-        self.game.make_move_coordinate(0, 3, -1)
+        self.game.make_move_coordinate(0, 3, 0)
         self.game.make_move_coordinate(1, 3, 1)
-        self.game.make_move_coordinate(4, 3, -1)
+        self.game.make_move_coordinate(4, 3, 0)
 
-        self.game.make_move_coordinate(1, 4, -1)
-        self.game.make_move_coordinate(2, 4, -1)
-        self.game.make_move_coordinate(3, 4, -1)
+        self.game.make_move_coordinate(1, 4, 0)
+        self.game.make_move_coordinate(2, 4, 0)
+        self.game.make_move_coordinate(3, 4, 0)
 
         self.game.surround_check()
 
-        self.assertNotEqual(self.game.field[2, 2, 1], -1, 'Wrong chain.')
+        self.assertTrue(self.game.owners[2, 2, 0], 'Wrong chain.')
 
     def test_simple_surround(self):
         """
@@ -142,19 +143,19 @@ class PointsTest(unittest.TestCase):
         OXO
         .O.
         """
-        self.game.make_move_coordinate(2, 1, -1)
+        self.game.make_move_coordinate(2, 1, 0)
 
-        self.game.make_move_coordinate(1, 2, -1)
+        self.game.make_move_coordinate(1, 2, 0)
         self.game.make_move_coordinate(2, 2, 1)
-        self.game.make_move_coordinate(3, 2, -1)
+        self.game.make_move_coordinate(3, 2, 0)
 
-        self.game.make_move_coordinate(2, 3, -1)
+        self.game.make_move_coordinate(2, 3, 0)
 
         self.game.surround_check()
         # print(self.game)
 
-        self.assertEqual(self.game.field[2, 2, 1], -1, 'Point is not surrounded.')
-        self.assertEqual(self.game.score[-1], 1, 'Wrong score.')
+        self.assertTrue(self.game.owners[2, 2, 0], 'Point is not surrounded.')
+        self.assertEqual(self.game.score[0], 1, 'Wrong score.')
 
     def test_random_moves(self):
         while not self.game.is_ended:
@@ -162,9 +163,9 @@ class PointsTest(unittest.TestCase):
             self.game.auto_turn(a)
 
     def test_grounded(self):
-        self.game.make_move_coordinate(2, 1, -1)
-        self.game.make_move_coordinate(1, 1, -1)
-        self.game.make_move_coordinate(0, 1, -1)
+        self.game.make_move_coordinate(2, 1, 0)
+        self.game.make_move_coordinate(1, 1, 0)
+        self.game.make_move_coordinate(0, 1, 0)
 
         self.game.grounding()
         self.game.change_turn()
@@ -173,13 +174,13 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(self.game.get_winner(), 0, 'Wrong winner')
 
     def test_surrounder_chain_grounding(self):
-        self.game.make_move_coordinate(2, 1, -1)
+        self.game.make_move_coordinate(2, 1, 0)
 
-        self.game.make_move_coordinate(1, 2, -1)
+        self.game.make_move_coordinate(1, 2, 0)
         self.game.make_move_coordinate(2, 2, 1)
-        self.game.make_move_coordinate(3, 2, -1)
+        self.game.make_move_coordinate(3, 2, 0)
 
-        self.game.make_move_coordinate(2, 3, -1)
+        self.game.make_move_coordinate(2, 3, 0)
 
         self.game.surround_check()
 
