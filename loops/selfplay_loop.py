@@ -42,7 +42,7 @@ class SelfplayLoop:
         game = Points(self.args.field_width, self.args.field_height)
         game.reset(random_crosses=self.args.random_crosses)
 
-        mcts = MCTS(self.args.simulations, model, c_puct=4)
+        mcts = MCTS(model, self.args.simulations, c_puct=4)
 
         positions = []
 
@@ -72,7 +72,7 @@ class SelfplayLoop:
             v = -v
 
         # TODO grounding support for policy
-        example = np.array(list(zip(*example)), dtype=[
+        example = np.array(example, dtype=[
             ('field', '?', (game.width, game.height, 4)),
             ('policy', 'f8', (game.field_size,)),
             ('value', 'i1')

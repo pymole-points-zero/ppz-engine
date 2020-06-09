@@ -1,6 +1,5 @@
 import config
 from points import Points
-from neural.model import prepare_predict
 from tensorflow.keras.models import load_model
 from mcts import MCTS
 import numpy as np

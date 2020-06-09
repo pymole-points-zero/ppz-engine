@@ -6,13 +6,13 @@ from collections import defaultdict
 from neural.model import prepare_predict_on_batch, prepare_predict
 import multiprocessing as mp
 import threading
+import sys, traceback
 
 EPS = 1e-8
 
 
 class MCTS:
 	def __init__(self, model, sim_count, c_puct=4, alpha=0.05, dirichlet_impact=0.25):
-		# TODO caching policy
 		self.sim_count = sim_count
 		self.Rsa = defaultdict(float)		# action Q
 		self.Nsa = defaultdict(int)			# n times the state was visited
@@ -55,56 +55,52 @@ class MCTS:
 		# search calls
 		for i in range(self.sim_count):
 			self.game = copy.deepcopy(game)
-			self.search_recursive()
+			self.search_iteration()
 
-	# TODO recursion -> loop
-	def search_recursive(self):
-		s = self.game.get_state()
+	def search_iteration(self):
+		transitions = []
+
+		while not self.game.is_ended:
+			s = self.game.get_state()
+
+			# leaf node
+			if s not in self.P:
+				value = self.expansion(s)
+				self.backpropagation(transitions, -value)
+				break
+
+			max_uct = -float('inf')
+			for cur_a, cur_p in self.P[s]:
+				# Transition
+				t = (s, cur_a)
+				if t in self.Nsa:
+					cur_uct = self.Rsa[t] / self.Nsa[t] + self.c_puct * cur_p * sqrt(self.N[s]) / (1 + self.Nsa[t])
+				else:
+					cur_uct = self.c_puct * cur_p * sqrt(self.N[s] + EPS)
+
+				if cur_uct > max_uct:
+					a = cur_a
+					max_uct = cur_uct
+
+			try:
+				self.game.auto_turn(a)
+			except Exception:
+				exc_type, exc_value, exc_traceback = sys.exc_info()
+				traceback.print_tb(exc_traceback)
+				traceback.print_exc()
+				print()
+				print(self.game)
+				print(a)
+
+				raise Exception
+
+			transitions.append((s, a))
 
 		if self.game.is_ended:
 			# estimate after game scores from last player perspective
 			# return to upper function negative reward because of player's turn change
-			return last_turn_player_reward(self.game)
-
-		# get policy from model
-		if s not in self.P:
-			# leaf node
-			return -self.expansion(s)
-
-		max_uct = -float('inf')
-		for cur_a, cur_pi in self.P[s]:
-			# print(curA, curPi, child_node, self.N)
-			transit = (s, cur_a)
-			if transit in self.Nsa:
-				cur_uct = self.Rsa[transit]/self.Nsa[transit] + self.c_puct * cur_pi * sqrt(self.N[s])/(1 + self.Nsa[transit])
-			else:
-				cur_uct = self.c_puct * cur_pi * sqrt(self.N[s]+EPS)
-
-			if cur_uct > max_uct:
-				a = cur_a
-				max_uct = cur_uct
-
-		try:
-			self.game.auto_turn(a)
-		except Exception:
-			import sys, traceback
-			exc_type, exc_value, exc_traceback = sys.exc_info()
-			traceback.print_tb(exc_traceback)
-			traceback.print_exc()
-			print()
-			print(self.game)
-			print(a)
-
-			raise Exception
-
-		# print(self.game, a)
-		v = self.search_recursive()
-
-		self.Rsa[(s, a)] += v
-		self.Nsa[(s, a)] += 1
-		self.N[s] += 1
-
-		return -v
+			value = last_turn_player_reward(self.game)
+			self.backpropagation(transitions, value)
 
 	def expansion(self, s):
 		f = field_perception(self.game.points, self.game.owners, self.game.player)
@@ -113,6 +109,13 @@ class MCTS:
 		self.P[s] = tuple((move, policy.__getitem__(move)) for move in self.game.free_dots)
 
 		return value
+
+	def backpropagation(self, transitions, value):
+		for s, a in reversed(transitions):
+			self.Rsa[(s, a)] += value
+			self.Nsa[(s, a)] += 1
+			self.N[s] += 1
+			value = -value
 
 
 # TODO root parallelization

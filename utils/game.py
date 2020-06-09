@@ -23,7 +23,7 @@ def field_perception(points, owners, cur_player):
 def symmetries(points, owners, cur_player, policy, value):
 	field_matrix = field_perception(points, owners, cur_player)
 	# TODO extract grounding move
-	policy_matrix = np.reshape(policy, field_matrix.shape)
+	policy_matrix = np.reshape(policy, (field_matrix.shape[0], field_matrix.shape[1]))
 
 	# square matrix have more symmetries
 	if field_matrix.shape[0] == field_matrix.shape[1]:
