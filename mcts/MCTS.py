@@ -1,6 +1,6 @@
 from math import sqrt
 import numpy as np
-from utils.game import last_turn_player_reward, get_field_perc
+from utils.game import last_turn_player_reward, field_perception
 import copy
 from collections import defaultdict
 from neural.model import prepare_predict_on_batch, prepare_predict
@@ -87,6 +87,11 @@ class MCTS:
 		try:
 			self.game.auto_turn(a)
 		except Exception:
+			import sys, traceback
+			exc_type, exc_value, exc_traceback = sys.exc_info()
+			traceback.print_tb(exc_traceback)
+			traceback.print_exc()
+			print()
 			print(self.game)
 			print(a)
 
@@ -102,7 +107,7 @@ class MCTS:
 		return -v
 
 	def expansion(self, s):
-		f = get_field_perc(self.game.field, self.game.player)
+		f = field_perception(self.game.points, self.game.owners, self.game.player)
 
 		policy, value = prepare_predict(self.model, f)
 		self.P[s] = tuple((move, policy.__getitem__(move)) for move in self.game.free_dots)
@@ -273,7 +278,7 @@ class MCTSRootWorker(MCTS):
 
 		if prediction is None:
 			# get
-			f = get_field_perc(self.game.field, self.game.player)
+			f = field_perception(self.game.points, self.game.owners, self.game.player)
 
 			# predictor worker make prediction and sends v
 			self.conn.send((2, (s, f, self.game.free_dots)))

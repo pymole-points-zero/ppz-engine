@@ -1,4 +1,4 @@
-from utils.game import last_turn_player_reward, get_field_perc
+from utils.game import last_turn_player_reward, symmetries
 from utils.processing.converting import save_sgf
 from points import Points
 from mcts import MCTS
@@ -44,8 +44,7 @@ class SelfplayLoop:
 
         mcts = MCTS(self.args.simulations, model, c_puct=4)
 
-        fields = []
-        policies = []
+        positions = []
 
         # game loop
         while not game.is_ended:
@@ -57,8 +56,7 @@ class SelfplayLoop:
             # field, policy, value
             # don't have reward for now
 
-            fields.append(get_field_perc(game.field, game.player))
-            policies.append(policy)
+            positions.append((game.points, game.owners, policy, game.player))
 
             game.auto_turn(a)   # do action
 
@@ -66,13 +64,16 @@ class SelfplayLoop:
 
         # insert game reward to examples
         # for the last turned player reward = v for another reward = -v
-        values = np.ndarray(shape=(len(fields),), dtype=np.int8)
-        for position_index in range(len(fields) - 1, -1, -1):
-            values[position_index] = v
+        example = []
+        for position_index in range(len(positions) - 1, -1, -1):
+            points, owners, policy, player = positions[position_index]
+            example += symmetries(points, owners, player, policy, v)
+
             v = -v
 
-        example = np.array(list(zip(fields, policies, values)), dtype=[
-            ('field', 'i1', (game.width, game.height, 2)),
+        # TODO grounding support for policy
+        example = np.array(list(zip(*example)), dtype=[
+            ('field', '?', (game.width, game.height, 4)),
             ('policy', 'f8', (game.field_size,)),
             ('value', 'i1')
         ])

@@ -89,10 +89,10 @@ class PAIPLoop:
         if self.args.first_crosses is None and self.args.second_crosses is None:
             custom_crosses = None
         else:
-            custom_crosses = {
-                -1: [] if self.args.first_crosses is None else self.args.first_crosses,
-                1: [] if self.args.second_crosses is None else self.args.second_crosses,
-            }
+            custom_crosses = [
+                [] if self.args.first_crosses is None else self.args.first_crosses,
+                [] if self.args.second_crosses is None else self.args.second_crosses,
+            ]
         self.game.reset(custom_crosses=custom_crosses)
 
         # init MCTS
@@ -152,6 +152,6 @@ class PAIPLoop:
         if color == '1':
             return 1
         if color == '0':
-            return -1
+            return 0
 
         raise Exception

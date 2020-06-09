@@ -107,7 +107,7 @@ class PointsTest(unittest.TestCase):
         # TODO checks
         self.game.surround_check()
 
-    def test_shortest_chain(self):
+    def test_longest_chain(self):
         """
         .O...
         O.O..
@@ -134,8 +134,9 @@ class PointsTest(unittest.TestCase):
         self.game.make_move_coordinate(3, 4, 0)
 
         self.game.surround_check()
-
-        self.assertTrue(self.game.owners[2, 2, 0], 'Wrong chain.')
+        # print(self.game)
+        # self.game.print_owners()
+        self.assertFalse(self.game.owners[2, 2, 0], 'Wrong chain.')
 
     def test_simple_surround(self):
         """

@@ -30,11 +30,17 @@ class Points:
         self.height = h
         self.field_size = w * h
 
-    # def __str__(self):
-    #     return '\n'.join(
-    #         '\t'.join(str(item[0]) for item in row)
-    #         for row in self.field
-    #     ) + '\n'
+    def __str__(self):
+        return '\n'.join(
+            '\t'.join('X' if item[0] else 'O' if item[1] else '-'  for item in row)
+            for row in self.points
+        ) + '\n'
+
+    def print_owners(self):
+        print('\n'.join(
+            '\t'.join('X' if item[0] else 'O' if item[1] else '-'  for item in row)
+            for row in self.owners
+        ) + '\n')
 
     def reset(self, random_crosses=False, custom_crosses=None):
         # points[x, y, player] = Bool
@@ -46,7 +52,7 @@ class Points:
         # self.sur_zones = []
         self.moves = []
         self.free_dots = set(range(self.field_size))
-        self.player = -1
+        self.player = 0
 
         if custom_crosses is not None:
             self.starting_crosses = custom_crosses
@@ -105,7 +111,10 @@ class Points:
 
     def can_put_dot(self, x, y):
         # if no owner and not surrounded
-        return self.points[x, y, 0] == self.points[x, y, 1]
+        return (self.points[x, y, 0] == 0
+                and self.points[x, y, 1] == 0
+                and self.owners[x, y, 0] == 0
+                and self.owners[x, y, 1] == 0)
 
     def neighbors_hor_ver(self, x, y):
         for off_x, off_y in self.sides:
