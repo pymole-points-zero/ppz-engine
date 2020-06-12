@@ -189,6 +189,7 @@ class MCTSRootParallelizer:
 
 			for conn in ready_conns:
 				flag, data = conn.recv()
+				print("FLAG:", flag, "DATA:", data, file=sys.stderr)
 
 				# worker synchronization
 				if flag == SYNCHRONIZATION:

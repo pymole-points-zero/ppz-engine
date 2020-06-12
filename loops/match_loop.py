@@ -44,7 +44,7 @@ class MatchLoop:
         first_mcts = MCTS(self.args.simulations, first_model)
         second_mcts = MCTS(self.args.simulations, second_model)
 
-        MCTSs = {-1: first_mcts, 1: second_mcts}
+        MCTSs = [first_mcts, second_mcts]
 
         game = Points(self.args.field_width, self.args.field_height)
         game.reset()
