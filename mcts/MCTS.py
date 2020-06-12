@@ -316,6 +316,7 @@ class MCTSRootWorker(MCTS):
 		self.workers_count = workers_count
 		self.conn = conn
 		self.exit = exit
+		print(self.worker_id, file=sys.stderr)
 
 		self.messages = {}
 		self.events = {}
