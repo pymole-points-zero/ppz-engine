@@ -61,4 +61,7 @@ class MatchLoop:
 
             game.auto_turn(a)
 
+        first_mcts.exit.set()
+        second_mcts.exit.set()
+
         return game

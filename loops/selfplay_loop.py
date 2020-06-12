@@ -3,7 +3,7 @@ from utils.processing.converting import save_sgf
 from points import Points
 from mcts import MCTSRootParallelizer
 import config
-
+import sys
 import numpy as np
 import gzip
 from tensorflow.keras.models import load_model
@@ -59,6 +59,9 @@ class SelfplayLoop:
             positions.append((game.points, game.owners, policy, game.player))
 
             game.auto_turn(a)   # do action
+
+        # close mcts processes
+        mcts.exit.set()
 
         v = np.int8(last_turn_player_reward(game))
 

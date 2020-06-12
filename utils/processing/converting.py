@@ -2,7 +2,6 @@ from unisgf.game_tree import GameTree
 from unisgf.collection import Collection
 from unisgf.property_value import PropertyValue
 from unisgf.rendering import Renderer
-from unisgf import property_value
 from string import ascii_letters
 from itertools import islice
 

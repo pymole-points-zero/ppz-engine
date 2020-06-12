@@ -153,13 +153,13 @@ class MCTSRootParallelizer:
 		self.workers = []
 		self.conns = []
 
-		exit = mp.Event()
-		signal.signal(signal.SIGINT, lambda sig, frame: exit.set())
+		self.exit = mp.Event()
+		signal.signal(signal.SIGINT, lambda sig, frame: self.exit.set())
 
 		for worker_id in range(self.workers_count):
 			parent_conn, worker_conn = mp.Pipe()
 			worker = mp.Process(target=MCTSRootWorker, args=(
-				worker_id, self.workers_count, worker_conn, exit, sim_count,
+				worker_id, self.workers_count, worker_conn, self.exit, sim_count,
 				c_puct, alpha, dirichlet_impact,
 			))
 			worker.start()
@@ -168,7 +168,11 @@ class MCTSRootParallelizer:
 			self.conns.append(parent_conn)
 
 	def search(self, game):
-		root_state = game.get_state()
+		# print("SEARCH STARTED", file=sys.stderr)
+		# clean root info
+		self.Rsa = defaultdict(int)  # Q reward of root actions
+		self.Nsa = defaultdict(int)  # times action played
+		self.N = defaultdict(int)
 
 		# send start search command to all workers
 		for conn in self.conns:
@@ -189,7 +193,7 @@ class MCTSRootParallelizer:
 
 			for conn in ready_conns:
 				flag, data = conn.recv()
-				print("FLAG:", flag, "DATA:", data, file=sys.stderr)
+				# print("FLAG:", flag, "DATA:", str(data)[:50], file=sys.stderr)
 
 				# worker synchronization
 				if flag == SYNCHRONIZATION:
@@ -209,8 +213,10 @@ class MCTSRootParallelizer:
 						state_waiters[state].append(conn)
 
 						# only one of waiter need to provide field data
-						if len(state_waiters[state]):
+						if len(state_waiters[state]) == 1:
 							conn.send((CACHED_PREDICTION, None))
+
+						# print(state_waiters[state], file=sys.stderr)
 
 					# send cached prediction
 					else:
@@ -219,8 +225,8 @@ class MCTSRootParallelizer:
 				# collect prediction data
 				elif flag == PREDICTION_DATA:
 					state, field, moves = data
-					available_moves[state] = moves
 					fields[state] = field
+					available_moves[state] = moves
 
 				# worker played simulations
 				elif flag == DONE:
@@ -229,29 +235,13 @@ class MCTSRootParallelizer:
 
 			# TODO send to all except one
 			if synchronization_conns:
-				# TODO maybe store in self.Rsa, self.Nsa, self.N only root?
-				Rsa = {}
-				Nsa = {}
-				for a in game.free_dots:
-					t = (root_state, a)
-					if t in self.Rsa:
-						Rsa[t] = self.Rsa[t]
-					if t in self.Nsa:
-						Nsa[t] = self.Nsa[t]
-
-				N = {root_state: self.N[root_state]}
-
-				master_root = Rsa, Nsa, N
-
 				for conn in synchronization_conns:
-					conn.send((SYNCHRONIZATION, master_root))
+					conn.send((SYNCHRONIZATION, (self.Rsa, self.Nsa, self.N)))
 
 			# TODO Ordered dict
 			if fields:
-				print(fields.keys())
-				# TODO fix duplication
-				for state, prediction in zip(list(fields.keys()), prepare_predict_on_batch(
-						self.model, list(fields.values()))):
+				predictions = zip(list(fields.keys()), prepare_predict_on_batch(self.model, list(fields.values())))
+				for state, prediction in predictions:
 					policy, value = prediction
 					policy = tuple((move, policy.__getitem__(move)) for move in available_moves[state])
 
@@ -265,6 +255,8 @@ class MCTSRootParallelizer:
 					available_moves.pop(state)
 					fields.pop(state)
 
+		# print("SEARCH ENDED", file=sys.stderr)
+
 	def update_master(self, worker_id, rsa, nsa, n):
 		# Recalculate master root. Subtract old values, and add new
 		for key, value in rsa.items():
@@ -276,7 +268,6 @@ class MCTSRootParallelizer:
 		for key, value in n.items():
 			self.N[key] += value - self.workers_n[worker_id].get(key, 0)
 
-		# save new workers data
 		self.workers_rsa[worker_id] = self.Rsa.copy()
 		self.workers_nsa[worker_id] = self.Nsa.copy()
 		self.workers_n[worker_id] = self.N.copy()
@@ -317,7 +308,6 @@ class MCTSRootWorker(MCTS):
 		self.workers_count = workers_count
 		self.conn = conn
 		self.exit = exit
-		print(self.worker_id, file=sys.stderr)
 
 		self.messages = {}
 		self.events = {}
@@ -335,6 +325,8 @@ class MCTSRootWorker(MCTS):
 		while not self.exit.is_set() and not self.conn.closed:
 			if self.conn.poll(timeout=self.listen_timeout):
 				flag, data = self.conn.recv()
+				# print(flag, str(data)[:50], self.events.keys(), file=sys.stderr)
+
 				if flag in self.events:
 					self.events[flag].set()
 				if flag in self.dispatcher:
@@ -346,9 +338,12 @@ class MCTSRootWorker(MCTS):
 		# TODO shut down old search thread
 		# if self.search_thread is not None:
 		# 	self.search_thread
-		search_thread = threading.Thread(target=self.search, args=(game,))
-		search_thread.daemon = True
-		search_thread.start()
+		self.messages.clear()
+		self.events.clear()
+
+		self.search_thread = threading.Thread(target=self.search, args=(game,))
+		self.search_thread.daemon = True
+		self.search_thread.start()
 
 	def search(self, game):
 		root_state = game.get_state()
@@ -378,6 +373,7 @@ class MCTSRootWorker(MCTS):
 	def expansion(self, s):
 		# check if prediction cached in master first
 		self.conn.send((CACHED_PREDICTION, s))
+
 		prediction = self.wait_flag(CACHED_PREDICTION)
 
 		# master makes prediction
@@ -385,6 +381,7 @@ class MCTSRootWorker(MCTS):
 			f = field_perception(self.game.points, self.game.owners, self.game.player)
 
 			self.conn.send((PREDICTION_DATA, (s, f, self.game.free_dots)))
+
 			prediction = self.wait_flag(CACHED_PREDICTION)
 
 		# each of workers caches policy to reduce number of pipe messages
@@ -399,6 +396,9 @@ class MCTSRootWorker(MCTS):
 		self.N.update(N)
 
 	def wait_flag(self, flag):
+		if flag in self.messages:
+			return self.messages.pop(flag)
+
 		if flag in self.events:
 			event = self.events[flag]
 		else:
