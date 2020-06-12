@@ -19,7 +19,7 @@ fi
 
 # start python script
 current_dir=$(dirname $0)
-$current_dir/venv/bin/python3.8 $current_dir/main.py paip --field_width 10 --field_height 10 --simulations 200 --weights $current_dir/model.h5 --input_pipe $input_pipe --output_pipe $output_pipe &
+$current_dir/venv/bin/python3.8 $current_dir/main.py paip --field_width 10 --field_height 10 --simulations 10 --weights $current_dir/model.h5 --input_pipe $input_pipe --output_pipe $output_pipe &
 
 python_pid=$!
 

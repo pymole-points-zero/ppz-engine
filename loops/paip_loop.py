@@ -96,7 +96,7 @@ class PAIPLoop:
         self.game.reset(custom_crosses=custom_crosses)
 
         # init MCTS
-        self.mcts = MCTS(self.model, self.args.simulations, c_puct=10)
+        self.mcts = MCTSRootParallelizer(self.model, self.args.simulations, c_puct=2)
 
     def author(self):
         return ('Roman Shevela',)
@@ -123,7 +123,7 @@ class PAIPLoop:
         self.game.player = player
         self.game.surround_check(mode='surround')  # check surrounds
         self.game.turn_tick()
-        self.game.player = -self.game.player
+        self.game.player = self.game.opponent(self.game.player)
         self.game.surround_check(mode='suicide')  # check suicide move into house
 
         if not self.game.free_dots:
@@ -144,7 +144,6 @@ class PAIPLoop:
         a = int(np.argmax(policy))
 
         x, y = self.game.get_pos_of_ind(a)
-        color = '0' if self.game.player == -1 else '1'
 
         return str(x), str(y), color
 

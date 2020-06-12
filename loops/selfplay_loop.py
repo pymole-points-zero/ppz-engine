@@ -1,7 +1,7 @@
 from utils.game import last_turn_player_reward, symmetries
 from utils.processing.converting import save_sgf
 from points import Points
-from mcts import MCTS
+from mcts import MCTSRootParallelizer
 import config
 
 import numpy as np
@@ -42,14 +42,14 @@ class SelfplayLoop:
         game = Points(self.args.field_width, self.args.field_height)
         game.reset(random_crosses=self.args.random_crosses)
 
-        mcts = MCTS(model, self.args.simulations, c_puct=4)
+        mcts = MCTSRootParallelizer(model, self.args.simulations, c_puct=4)
 
         positions = []
 
         # game loop
         while not game.is_ended:
             mcts.search(game)
-            policy = mcts.get_policy(game)  # all actions' probabilities (not possible actions with 0 probability)
+            policy = mcts.get_dirichlet_policy(game)  # all actions' probabilities (not possible actions with 0 probability)
             # print('policy', policy)
             a = int(np.random.choice(len(policy), p=policy))
 
