@@ -336,6 +336,7 @@ class MCTSRootWorker(MCTS):
 
 	def start_search(self, game):
 		# TODO shut down old search thread
+		# TODO test with tree refresh
 		# if self.search_thread is not None:
 		# 	self.search_thread
 		self.messages.clear()

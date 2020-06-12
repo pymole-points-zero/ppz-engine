@@ -1,7 +1,7 @@
 import config
 from points import Points
 from tensorflow.keras.models import load_model
-from mcts import MCTS
+from mcts import MCTSRootParallelizer
 import numpy as np
 
 from utils.processing.converting import save_sgf
@@ -41,8 +41,8 @@ class MatchLoop:
             first_model, second_model = best_model, candidate_model
 
         # setup MCTS for both nets
-        first_mcts = MCTS(self.args.simulations, first_model)
-        second_mcts = MCTS(self.args.simulations, second_model)
+        first_mcts = MCTSRootParallelizer(first_model, self.args.simulations)
+        second_mcts = MCTSRootParallelizer(second_model, self.args.simulations)
 
         MCTSs = [first_mcts, second_mcts]
 
