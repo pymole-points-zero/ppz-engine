@@ -327,12 +327,17 @@ class MCTSRootWorker(MCTS):
 				flag, data = self.conn.recv()
 				# print(flag, str(data)[:50], self.events.keys(), file=sys.stderr)
 
-				if flag in self.events:
-					self.events[flag].set()
 				if flag in self.dispatcher:
 					self.dispatcher[flag](*data)
 				else:
 					self.messages[flag] = data
+
+				if flag in self.events:
+					self.events[flag].set()
+				else:
+					event = threading.Event()
+					event.set()
+					self.events[flag] = event
 
 	def start_search(self, game):
 		# TODO shut down old search thread
@@ -397,9 +402,6 @@ class MCTSRootWorker(MCTS):
 		self.N.update(N)
 
 	def wait_flag(self, flag):
-		if flag in self.messages:
-			return self.messages.pop(flag)
-
 		if flag in self.events:
 			event = self.events[flag]
 		else:

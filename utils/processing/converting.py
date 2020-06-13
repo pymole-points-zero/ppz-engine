@@ -62,10 +62,10 @@ def save_sgf(game, sgf_filename):
 
     # result
     winner = game.get_winner()
-    if winner == -1:
-        result_string = 'B+' + str(game.score[-1] - game.score[1])
+    if winner == 0:
+        result_string = 'B+' + str(game.score[0] - game.score[1])
     elif winner == 1:
-        result_string = 'W+' + str(game.score[1] - game.score[-1])
+        result_string = 'W+' + str(game.score[1] - game.score[0])
     else:
         result_string = '0'
 

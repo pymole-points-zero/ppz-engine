@@ -402,9 +402,9 @@ class Points:
 
     def get_winner(self):
         if self.score[0] > self.score[1]:
-            return -1
+            return 0
         if self.score[1] > self.score[0]:
             return 1
 
-        return 0
+        return -1
 

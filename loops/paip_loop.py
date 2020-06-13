@@ -96,7 +96,7 @@ class PAIPLoop:
         self.game.reset(custom_crosses=custom_crosses)
 
         # init MCTS
-        self.mcts = MCTSRootParallelizer(self.model, self.args.simulations, c_puct=2)
+        self.mcts = MCTS(self.model, self.args.simulations, c_puct=2)
 
     def author(self):
         return ('Roman Shevela',)
