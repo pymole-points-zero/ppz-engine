@@ -44,6 +44,7 @@ if __name__ == '__main__':
     parser_engine.add_argument('--random_crosses', action='store_true')
     parser_engine.add_argument('--first_crosses', type=str, required=False)
     parser_engine.add_argument('--second_crosses', type=str, required=False)
+    parser_engine.add_argument('--parallel', type=int, default=-1)
 
     # add different modes as subcommands
 

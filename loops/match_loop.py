@@ -41,8 +41,8 @@ class MatchLoop:
             first_model, second_model = best_model, candidate_model
 
         # setup MCTS for both nets
-        first_mcts = MCTSRootParallelizer(first_model, self.args.simulations)
-        second_mcts = MCTSRootParallelizer(second_model, self.args.simulations)
+        first_mcts = MCTSRootParallelizer(first_model, self.args.simulations, self.args.parallel)
+        second_mcts = MCTSRootParallelizer(second_model, self.args.simulations, self.args.parallel)
 
         MCTSs = [first_mcts, second_mcts]
 

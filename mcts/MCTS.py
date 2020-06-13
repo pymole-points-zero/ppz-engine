@@ -120,7 +120,6 @@ class MCTS:
 			value = -value
 
 
-# TODO root parallelization
 # TODO add option to delete all node except root and its children to release memory
 # TODO get optimal alpha value
 
@@ -133,7 +132,7 @@ DONE = 4
 
 
 class MCTSRootParallelizer:
-	def __init__(self, model, sim_count, c_puct=4, alpha=0.05, dirichlet_impact=0.25):
+	def __init__(self, model, sim_count, processes=-1, c_puct=4, alpha=0.05, dirichlet_impact=0.25):
 		self.model = model
 
 		self.Rsa = defaultdict(int)		# Q reward of root actions
@@ -145,7 +144,11 @@ class MCTSRootParallelizer:
 		self.dirichlet_impact = dirichlet_impact
 
 		# create workers before any searches
-		self.workers_count = mp.cpu_count()
+		if processes == -1:
+			self.workers_count = mp.cpu_count()
+		else:
+			self.workers_count = processes
+
 		self.workers_rsa = [{} for _ in range(self.workers_count)]
 		self.workers_nsa = [{} for _ in range(self.workers_count)]
 		self.workers_n = [{} for _ in range(self.workers_count)]
@@ -311,6 +314,7 @@ class MCTSRootWorker(MCTS):
 
 		self.messages = {}
 		self.events = {}
+		self.creating_event = threading.Event()
 
 		self.dispatcher = {
 			START_SEARCH: self.start_search
@@ -334,10 +338,6 @@ class MCTSRootWorker(MCTS):
 
 				if flag in self.events:
 					self.events[flag].set()
-				else:
-					event = threading.Event()
-					event.set()
-					self.events[flag] = event
 
 	def start_search(self, game):
 		# TODO shut down old search thread
@@ -370,25 +370,22 @@ class MCTSRootWorker(MCTS):
 
 			root_N = {root_state: self.N[root_state]}
 
-			self.conn.send((SYNCHRONIZATION, (self.worker_id, root_Rsa, root_Nsa, root_N)))
-			Rsa, Nsa, N = self.wait_flag(SYNCHRONIZATION)
+			Rsa, Nsa, N = self.send_and_wait(SYNCHRONIZATION, SYNCHRONIZATION,
+											 (self.worker_id, root_Rsa, root_Nsa, root_N))
+
 			self.synchronize(Rsa, Nsa, N)
 
 		self.conn.send((DONE, self.worker_id))
 
 	def expansion(self, s):
 		# check if prediction cached in master first
-		self.conn.send((CACHED_PREDICTION, s))
-
-		prediction = self.wait_flag(CACHED_PREDICTION)
+		prediction = self.send_and_wait(CACHED_PREDICTION, CACHED_PREDICTION, s)
 
 		# master makes prediction
 		if prediction is None:
 			f = field_perception(self.game.points, self.game.owners, self.game.player)
 
-			self.conn.send((PREDICTION_DATA, (s, f, self.game.free_dots)))
-
-			prediction = self.wait_flag(CACHED_PREDICTION)
+			prediction = self.send_and_wait(PREDICTION_DATA, CACHED_PREDICTION, (s, f, self.game.free_dots))
 
 		# each of workers caches policy to reduce number of pipe messages
 		policy, value = prediction
@@ -401,13 +398,10 @@ class MCTSRootWorker(MCTS):
 		self.Nsa.update(Nsa)
 		self.N.update(N)
 
-	def wait_flag(self, flag):
-		if flag in self.events:
-			event = self.events[flag]
-		else:
-			event = threading.Event()
-			self.events[flag] = event
-
+	def send_and_wait(self, send_flag, wait_flag, data):
+		event = threading.Event()
+		self.events[wait_flag] = event
+		self.conn.send((send_flag, data))
 		event.wait()
-		self.events.pop(flag)
-		return self.messages.pop(flag)
+		self.events.pop(wait_flag)
+		return self.messages.pop(wait_flag)
