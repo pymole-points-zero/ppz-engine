@@ -54,8 +54,8 @@ def save_sgf(game, sgf_filename):
     root['RU'] = ['russian']   # rules
 
     # starting position (stones)
-    if game.starting_crosses[-1]:
-        root['AB'] = game.starting_crosses[-1]
+    if game.starting_crosses[0]:
+        root['AB'] = game.starting_crosses[1]
 
     if game.starting_crosses[1]:
         root['AW'] = game.starting_crosses[1]
