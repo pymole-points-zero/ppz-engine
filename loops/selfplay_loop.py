@@ -42,7 +42,7 @@ class SelfplayLoop:
         game = Points(self.args.field_width, self.args.field_height)
         game.reset(random_crosses=self.args.random_crosses)
 
-        mcts = MCTSRootParallelizer(model, self.args.simulations, self.args.parallel, c_puct=2)
+        mcts = MCTSRootParallelizer(model, self.args.simulations, self.args.parallel, c_puct=1.2)
 
         positions = []
 
